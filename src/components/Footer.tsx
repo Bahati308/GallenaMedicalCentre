@@ -25,7 +25,7 @@ export default function Footer() {
                 href="https://facebook.com/"
                 target="_blank"
                 rel="noopener"
-                className="grid place-items-center w-10 h-10 rounded-xl bg-[#eef8f8] text-black no-underline border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] dark:bg-slate-900 pop-on-scroll visible"
+                className="grid place-items-center w-10 h-10 rounded-xl bg-[#eef8f8] text-black no-underline border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] dark:bg-slate-900 pop-on-scroll visible transition-all duration-300 hover:scale-110 hover:shadow-xl hover:bg-blue-50 active:scale-95"
               >
                 <svg
                   width="20"
@@ -44,7 +44,7 @@ export default function Footer() {
                 href="https://wa.me/256787992588"
                 target="_blank"
                 rel="noopener"
-                className="grid place-items-center w-10 h-10 rounded-xl bg-[#eef8f8] text-black no-underline pop-on-scroll visible border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] dark:bg-slate-900"
+                className="grid place-items-center w-10 h-10 rounded-xl bg-[#eef8f8] text-black no-underline pop-on-scroll visible border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] dark:bg-slate-900 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:bg-emerald-50 active:scale-95"
               >
                 <svg
                   width="20"
@@ -61,7 +61,7 @@ export default function Footer() {
               <a
                 aria-label="Email"
                 href="mailto:gallenamedicalcentre@gmail.com"
-                className="grid place-items-center w-10 h-10 rounded-xl bg-[#eef8f8] text-black no-underline pop-on-scroll visible border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] dark:bg-slate-900"
+                className="grid place-items-center w-10 h-10 rounded-xl bg-[#eef8f8] text-black no-underline pop-on-scroll visible border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] dark:bg-slate-900 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:bg-blue-50 active:scale-95"
               >
                 <svg
                   width="20"

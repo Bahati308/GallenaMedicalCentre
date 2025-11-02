@@ -103,13 +103,13 @@ export default function Chatbot() {
         <button
           onClick={() => setOpen(true)}
           aria-label="Open Gallena PDA"
-          className="shadow-soft w-14 h-14 rounded-full bg-[#0b3b4f] text-white text-sm font-semibold"
+          className="shadow-soft w-14 h-14 rounded-full bg-[#0b3b4f] text-white text-sm font-semibold transition-all duration-300 hover:scale-110 hover:shadow-xl hover:rotate-6 active:scale-95 animate-pulse-glow animate-wiggle-3d"
         >
           PDA
         </button>
       )}
       {open && (
-        <div className="w-80 max-w-[92vw] h-[480px] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-soft bg-white dark:bg-slate-900 overflow-hidden flex flex-col">
+        <div className="w-80 max-w-[92vw] h-[480px] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-soft bg-white dark:bg-slate-900 overflow-hidden flex flex-col animate-bounce-in-3d">
           <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-[#0b3b4f]">
             <div className="flex items-center gap-2">
               <span className="grid place-items-center w-6 h-6 rounded-md text-white text-xs font-bold bg-[#0b3b4f]">

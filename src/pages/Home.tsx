@@ -13,6 +13,7 @@ function useCarousel(length: number, intervalMs = 4500) {
 }
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const testimonials = [
     { q: 'Professional and kind. My surgery and recovery were smooth.', a: '— Ama K.' },
     { q: 'The pediatric team made my child feel safe and happy.', a: '— Joseph N.' },
@@ -57,16 +58,16 @@ export default function Home() {
               general medicine, dental, maternity, surgery, and more.
             </p>
             <div className="flex gap-3 reveal-up opacity-0 translate-y-3 transition">
-              <a href="#consultation" className="btn btn-primary">
+              <button onClick={() => setIsModalOpen(true)} className="btn btn-primary btn-3d">
                 Book Consultation
-              </a>
-              <Link to="/services" className="btn btn-outline">
+              </button>
+              <Link to="/services" className="btn btn-outline btn-3d">
                 Explore Services
               </Link>
             </div>
           </div>
           <div aria-hidden className="reveal-up opacity-0 translate-y-3 transition">
-            <div className="w-full h-[280px] rounded-2xl border border-slate-200 shadow-soft bg-[radial-gradient(1200px_300px_at_-10%_-10%,#e6fffb_10%,transparent_40%),conic-gradient(from_0deg_at_50%_50%,rgba(16,185,129,.15),rgba(14,165,233,.15),rgba(14,165,233,.06),rgba(16,185,129,.06))] dark:hidden"></div>
+            <div className="w-full h-[280px] rounded-2xl border border-slate-200 shadow-soft bg-[radial-gradient(1200px_300px_at_-10%_-10%,#e6fffb_10%,transparent_40%),conic-gradient(from_0deg_at_50%_50%,rgba(16,185,129,.15),rgba(14,165,233,.15),rgba(14,165,233,.06),rgba(16,185,129,.06))] dark:hidden animate-float-3d"></div>
           </div>
         </div>
       </section>
@@ -74,7 +75,7 @@ export default function Home() {
       <section id="about" className="py-16">
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
-            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)]">
+            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
               About Us
             </h2>
             <p className="muted">
@@ -98,7 +99,11 @@ export default function Home() {
                 d: 'Personalized treatment plans and transparent communication at every step.',
               },
             ].map((i, idx) => (
-              <div key={idx} className="card reveal-up opacity-0 translate-y-3 transition">
+              <div
+                key={idx}
+                className={`card card-3d reveal-up opacity-0 translate-y-3 transition delay-[${idx * 0.1}s]`}
+                style={{ transitionDelay: `${idx * 0.1}s` }}
+              >
                 <h3 className="font-semibold text-lg">{i.t}</h3>
                 <p>{i.d}</p>
               </div>
@@ -113,7 +118,7 @@ export default function Home() {
       >
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
-            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)]">
+            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
               Medical Services
             </h2>
             <p className="muted">
@@ -131,14 +136,18 @@ export default function Home() {
               'Orthopedics',
               'Laboratory',
             ].map((s, idx) => (
-              <article key={idx} className="card reveal-up opacity-0 translate-y-3 transition">
+              <article
+                key={idx}
+                className={`card card-3d reveal-up opacity-0 translate-y-3 transition`}
+                style={{ transitionDelay: `${idx * 0.05}s` }}
+              >
                 <h3 className="font-semibold text-lg">{s}</h3>
                 <p className="muted">Learn more about our {s.toLowerCase()} services.</p>
               </article>
             ))}
           </div>
           <div className="text-center mt-6 reveal-up opacity-0 translate-y-3 transition">
-            <Link to="/services" className="btn btn-outline">
+            <Link to="/services" className="btn btn-outline btn-3d">
               View All Services
             </Link>
           </div>
@@ -148,16 +157,48 @@ export default function Home() {
       <section id="consultation" className="py-16">
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
-            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)]">
+            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
               Book a Consultation
             </h2>
             <p className="muted">
               Complete the form and our team will contact you to confirm your appointment.
             </p>
           </div>
-          <AppointmentForm />
+          {/* Appointment form would have been here - now in modal */}
         </div>
       </section>
+
+      {/* Appointment Modal */}
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={() => setIsModalOpen(false)}
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
+
+          {/* Modal Content */}
+          <div
+            className="relative bg-white rounded-2xl shadow-2xl w-[95vw] md:w-[60vw] max-h-[90vh] overflow-y-auto animate-bounce-in-3d z-10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-gradient-to-r from-brand-blue to-brand-green px-6 py-4 flex items-center justify-between z-20">
+              <h2 className="text-2xl font-bold text-white font-heading">Book Appointment</h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-white hover:text-slate-200 text-2xl font-bold transition-transform duration-300 hover:scale-125"
+                aria-label="Close modal"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="p-8">
+              <AppointmentForm onClose={() => setIsModalOpen(false)} />
+            </div>
+          </div>
+        </div>
+      )}
 
       <section
         id="staff"
@@ -165,7 +206,7 @@ export default function Home() {
       >
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
-            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)]">
+            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
               Our Team
             </h2>
             <p className="muted">Dedicated professionals delivering exceptional care.</p>
@@ -193,8 +234,12 @@ export default function Home() {
                 d: 'Patient advocacy and quality assurance across wards.',
               },
             ].map((p, idx) => (
-              <article key={idx} className="card reveal-up opacity-0 translate-y-3 transition">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-100 to-cyan-100 border border-slate-200 mb-2 dark:bg-slate-800 dark:border-slate-700" />
+              <article
+                key={idx}
+                className={`card card-3d reveal-up opacity-0 translate-y-3 transition`}
+                style={{ transitionDelay: `${idx * 0.05}s` }}
+              >
+                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-100 to-cyan-100 border border-slate-200 mb-2 dark:bg-slate-800 dark:border-slate-700 animate-tilt-3d" />
                 <h3 className="font-semibold">{p.n}</h3>
                 <p className="muted">{p.t}</p>
                 <p>{p.d}</p>
@@ -202,7 +247,7 @@ export default function Home() {
             ))}
           </div>
           <div className="text-center mt-6 reveal-up opacity-0 translate-y-3 transition">
-            <Link to="/staff" className="btn btn-outline">
+            <Link to="/staff" className="btn btn-outline btn-3d">
               Meet All Staff
             </Link>
           </div>
@@ -212,7 +257,7 @@ export default function Home() {
       <section id="blog" className="py-16">
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
-            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)]">
+            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
               From Our Blog
             </h2>
             <p className="muted">Health tips, hospital news, and community updates.</p>
@@ -232,7 +277,11 @@ export default function Home() {
                 d: 'Prevention and early detection keep you smiling.',
               },
             ].map((p, idx) => (
-              <article key={idx} className="card reveal-up opacity-0 translate-y-3 transition">
+              <article
+                key={idx}
+                className={`card card-3d reveal-up opacity-0 translate-y-3 transition`}
+                style={{ transitionDelay: `${idx * 0.1}s` }}
+              >
                 <div className="w-full h-36 rounded-xl bg-gradient-to-tr from-sky-100 to-emerald-100 border border-slate-200 mb-2" />
                 <h3 className="font-semibold">{p.t}</h3>
                 <p className="muted">{p.d}</p>
@@ -243,7 +292,7 @@ export default function Home() {
             ))}
           </div>
           <div className="text-center mt-6 reveal-up opacity-0 translate-y-3 transition">
-            <Link to="/blog" className="btn btn-outline">
+            <Link to="/blog" className="btn btn-outline btn-3d">
               View Blog
             </Link>
           </div>
@@ -256,7 +305,7 @@ export default function Home() {
       >
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
-            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)]">
+            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
               Patient Testimonials
             </h2>
             <p className="muted">Real stories from those we serve.</p>
@@ -266,7 +315,7 @@ export default function Home() {
               {testimonials.map((t, idx) => (
                 <figure
                   key={idx}
-                  className={`transition-opacity duration-300 ${idx === tIndex ? 'opacity-100' : 'opacity-0 absolute'}`}
+                  className={`transition-all duration-500 ${idx === tIndex ? 'opacity-100 translate-y-0' : 'opacity-0 absolute translate-y-4'}`}
                 >
                   <blockquote className="text-lg font-medium">{t.q}</blockquote>
                   <figcaption className="muted">{t.a}</figcaption>
@@ -280,9 +329,32 @@ export default function Home() {
   );
 }
 
-function AppointmentForm() {
+function AppointmentForm({ onClose }: { onClose?: () => void }) {
   const [status, setStatus] = useState<'idle' | 'ok' | 'err'>('idle');
   const [msg, setMsg] = useState('');
+  const [emailValid, setEmailValid] = useState(true);
+  const [emailError, setEmailError] = useState('');
+
+  function validateEmail(email: string) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const email = e.target.value;
+    if (!email) {
+      setEmailValid(true);
+      setEmailError('');
+      return;
+    }
+    if (validateEmail(email)) {
+      setEmailValid(true);
+      setEmailError('');
+    } else {
+      setEmailValid(false);
+      setEmailError('Please enter a valid email address');
+    }
+  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -299,12 +371,26 @@ function AppointmentForm() {
       setStatus('err');
       return;
     }
+
+    if (!emailValid) {
+      setMsg('Please enter a valid email address.');
+      setStatus('err');
+      return;
+    }
+
     try {
-      // Replace with real API endpoint
       await new Promise((r) => setTimeout(r, 600));
-      setMsg('Appointment request sent. We will contact you shortly.');
+      setMsg('Appointment request sent successfully. We will contact you shortly.');
       setStatus('ok');
+      setEmailValid(true);
+      setEmailError('');
       e.currentTarget.reset();
+      if (onClose) {
+        setTimeout(() => {
+          onClose();
+          setStatus('idle');
+        }, 2000);
+      }
     } catch {
       setMsg('Something went wrong. Please try again later or contact us.');
       setStatus('err');
@@ -312,56 +398,56 @@ function AppointmentForm() {
   }
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="card reveal-up opacity-0 translate-y-3 transition"
-      noValidate
-    >
-      <div className="grid md:grid-cols-2 gap-4">
+    <form onSubmit={onSubmit} noValidate>
+      <div className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-4">
+          <label className="flex flex-col gap-2">
+            <span className="font-semibold text-slate-900">Full Name</span>
+            <input
+              name="fullName"
+              required
+              className="form-input-modern"
+              placeholder="Your full name"
+            />
+          </label>
+          <label className="flex flex-col gap-2">
+            <span className="font-semibold text-slate-900">Email</span>
+            <input
+              type="email"
+              name="email"
+              required
+              onChange={handleEmailChange}
+              className={`form-input-modern ${!emailValid ? 'border-red-500 bg-red-50' : ''}`}
+              placeholder="you@example.com"
+            />
+            {!emailValid && (
+              <span className="text-red-600 text-sm font-medium animate-fade-in">{emailError}</span>
+            )}
+          </label>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <label className="flex flex-col gap-2">
+            <span className="font-semibold text-slate-900">Phone Number</span>
+            <input
+              name="phone"
+              required
+              className="form-input-modern"
+              placeholder="e.g. +1 555 123 4567"
+            />
+          </label>
+          <label className="flex flex-col gap-2">
+            <span className="font-semibold text-slate-900">Preferred Date &amp; Time</span>
+            <input
+              type="datetime-local"
+              name="preferredDateTime"
+              required
+              className="form-input-modern"
+            />
+          </label>
+        </div>
         <label className="flex flex-col gap-2">
-          <span>Full Name</span>
-          <input
-            name="fullName"
-            required
-            className="w-full px-3 py-3 rounded-lg border border-slate-200 text-black bg-white placeholder:text-slate-500 focus:outline-2 focus:outline-offset-0 focus:outline-[rgba(14,165,163,.25)]"
-            placeholder="Your full name"
-          />
-        </label>
-        <label className="flex flex-col gap-2">
-          <span>Email</span>
-          <input
-            type="email"
-            name="email"
-            required
-            className="w-full px-3 py-3 rounded-lg border border-slate-200 text-black bg-white placeholder:text-slate-500 focus:outline-2 focus:outline-offset-0 focus:outline-[rgba(14,165,163,.25)]"
-            placeholder="you@example.com"
-          />
-        </label>
-        <label className="flex flex-col gap-2">
-          <span>Phone Number</span>
-          <input
-            name="phone"
-            required
-            className="w-full px-3 py-3 rounded-lg border border-slate-200 text-black bg-white placeholder:text-slate-500 focus:outline-2 focus:outline-offset-0 focus:outline-[rgba(14,165,163,.25)]"
-            placeholder="e.g. +1 555 123 4567"
-          />
-        </label>
-        <label className="flex flex-col gap-2">
-          <span>Preferred Date &amp; Time</span>
-          <input
-            type="datetime-local"
-            name="preferredDateTime"
-            required
-            className="w-full px-3 py-3 rounded-lg border border-slate-200 text-black bg-white placeholder:text-slate-500 focus:outline-2 focus:outline-offset-0 focus:outline-[rgba(14,165,163,.25)]"
-          />
-        </label>
-        <label className="flex flex-col gap-2 md:col-span-2 md:max-w-md">
-          <span>Department / Service</span>
-          <select
-            name="department"
-            required
-            className="w-full px-3 py-3 rounded-lg border border-slate-200 text-black bg-white focus:outline-2 focus:outline-offset-0 focus:outline-[rgba(14,165,163,.25)]"
-          >
+          <span className="font-semibold text-slate-900">Department / Service</span>
+          <select name="department" required className="form-input-modern">
             <option value="" disabled selected>
               Select a department
             </option>
@@ -379,27 +465,29 @@ function AppointmentForm() {
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-2 md:col-span-2">
-          <span>Message (optional)</span>
+        <label className="flex flex-col gap-2">
+          <span className="font-semibold text-slate-900">Additional Details (optional)</span>
           <textarea
             name="message"
             rows={4}
-            className="w-full px-3 py-3 rounded-lg border border-slate-200 text-black bg-white placeholder:text-slate-500 focus:outline-2 focus:outline-offset-0 focus:outline-[rgba(14,165,163,.25)]"
-            placeholder="Any additional details"
+            className="form-input-modern resize-none"
+            placeholder="Any additional details about your appointment needs..."
           />
         </label>
-      </div>
-      <div className="flex items-center gap-3 mt-3">
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary btn-3d w-full py-4 text-lg font-bold">
           Book Appointment
         </button>
-        <p className="muted m-0 text-sm">By submitting, you agree to be contacted by our team.</p>
-      </div>
-      {status !== 'idle' && (
-        <p className={`mt-3 font-medium ${status === 'ok' ? 'text-brand-navy' : 'text-red-700'}`}>
-          {msg}
+        {status !== 'idle' && (
+          <div
+            className={`p-4 rounded-lg font-medium animate-fade-in ${status === 'ok' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}
+          >
+            {msg}
+          </div>
+        )}
+        <p className="text-slate-600 text-sm text-center">
+          By submitting, you agree to be contacted by our team.
         </p>
-      )}
+      </div>
     </form>
   );
 }

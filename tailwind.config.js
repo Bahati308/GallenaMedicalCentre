@@ -17,6 +17,20 @@ export default {
       borderRadius: {
         xl: '14px',
       },
+      fontFamily: {
+        sans: [
+          'Inter',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica Neue',
+          'Arial',
+          'sans-serif',
+        ],
+        heading: ['Oswald', 'Impact', 'sans-serif'],
+      },
     },
     container: {
       center: true,

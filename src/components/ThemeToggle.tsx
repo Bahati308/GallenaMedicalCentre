@@ -31,10 +31,10 @@ export default function ThemeToggle() {
     <button
       aria-label="Toggle dark mode"
       onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
-      className="ml-2 inline-flex items-center justify-center w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
+      className="ml-2 inline-flex items-center justify-center w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-all duration-300 hover:scale-110 active:scale-95 hover:rotate-12"
       title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
     >
-      {theme === 'dark' ? '☀️' : '🌙'}
+      <span className="transition-transform duration-500">{theme === 'dark' ? '☀️' : '🌙'}</span>
     </button>
   );
 }

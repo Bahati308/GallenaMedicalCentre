@@ -13,17 +13,17 @@ export default function Header() {
   return (
     <header
       id="site-header"
-      className={`sticky top-0 z-40 bg-transparent backdrop-blur border-b border-slate-200 dark:border-slate-700 ${elevated ? 'shadow' : ''}`}
+      className={`sticky top-0 z-40 bg-transparent backdrop-blur border-b border-slate-200 dark:border-slate-700 transition-all duration-300 ${elevated ? 'shadow-lg shadow-brand-blue/10' : ''}`}
     >
       <div className="container-1120 flex items-center justify-between py-3">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 no-underline text-slate-900 font-semibold"
+          className="inline-flex items-center gap-2 no-underline text-white font-semibold group transition-transform duration-300 hover:scale-105"
         >
-          <span className="grid place-items-center w-7 h-7 rounded-lg text-white font-bold bg-gradient-to-tr from-brand-blue to-brand-green">
+          <span className="grid place-items-center w-7 h-7 rounded-lg text-white font-bold bg-white/20 shadow-md shadow-white/20 transition-all duration-300 group-hover:rotate-12 group-hover:shadow-lg group-hover:shadow-white/30 animate-tilt-3d">
             +
           </span>
-          <span className="whitespace-nowrap dark:text-slate-100 text-xl md:text-2xl italic">
+          <span className="whitespace-nowrap text-white text-xl md:text-2xl italic font-heading">
             Gallena Medical Centre
           </span>
         </Link>
@@ -31,19 +31,19 @@ export default function Header() {
           <button
             aria-expanded={open}
             aria-controls="nav-menu"
-            className="md:hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-slate-100"
+            className="md:hidden bg-white/20 border border-white/30 rounded-xl px-3 py-2 text-white transition-all duration-300 hover:scale-105 active:scale-95"
             onClick={() => setOpen((v) => !v)}
           >
-            Menu
+            {open ? '✕' : '☰'} Menu
           </button>
           <ul
             id="nav-menu"
-            className={`md:flex gap-5 list-none m-0 p-0 absolute md:static right-0 top-12 bg-white dark:bg-slate-900 md:bg-transparent md:dark:bg-transparent border md:border-0 border-slate-200 dark:border-slate-700 rounded-xl md:rounded-none px-3 py-2 md:p-0 ${open ? 'flex flex-col' : 'hidden md:flex'}`}
+            className={`md:flex gap-5 list-none m-0 p-0 absolute md:static right-0 top-12 bg-brand-green md:bg-transparent border md:border-0 border-white/20 rounded-xl md:rounded-none px-3 py-2 md:p-0 transition-all duration-300 ${open ? 'flex flex-col animate-scale-in' : 'hidden md:flex'}`}
           >
             <li>
               <NavLink
                 to="/services"
-                className="px-2 py-2 rounded-lg text-slate-900 dark:text-slate-100 hover:bg-emerald-100 dark:hover:bg-emerald-900 font-bold text-xl md:text-2xl"
+                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-transform duration-300 hover:scale-[1.3] font-heading"
               >
                 Services
               </NavLink>
@@ -51,7 +51,7 @@ export default function Header() {
             <li>
               <NavLink
                 to="/staff"
-                className="px-2 py-2 rounded-lg text-slate-900 dark:text-slate-100 hover:bg-emerald-100 dark:hover:bg-emerald-900 font-bold text-xl md:text-2xl"
+                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-transform duration-300 hover:scale-[1.3] font-heading"
               >
                 Staff
               </NavLink>
@@ -59,7 +59,7 @@ export default function Header() {
             <li>
               <NavLink
                 to="/blog"
-                className="px-2 py-2 rounded-lg text-slate-900 dark:text-slate-100 hover:bg-emerald-100 dark:hover:bg-emerald-900 font-bold text-xl md:text-2xl"
+                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-transform duration-300 hover:scale-[1.3] font-heading"
               >
                 Blog
               </NavLink>
@@ -67,15 +67,15 @@ export default function Header() {
             <li>
               <NavLink
                 to="/contact"
-                className="px-2 py-2 rounded-lg text-slate-900 dark:text-slate-100 hover:bg-emerald-100 dark:hover:bg-emerald-900 font-bold text-xl md:text-2xl"
+                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-transform duration-300 hover:scale-[1.3] font-heading"
               >
                 Contact
               </NavLink>
             </li>
           </ul>
         </nav>
-        <div className="flex items-center">
-          <a href="#consultation" className="btn btn-primary hidden md:inline-flex">
+        <div className="flex items-center gap-3">
+          <a href="#consultation" className="btn btn-primary hidden md:inline-flex animate-fade-in">
             Book Consultation
           </a>
           <ThemeToggle />
