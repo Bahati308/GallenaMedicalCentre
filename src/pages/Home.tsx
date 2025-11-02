@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 
 function useCarousel(length: number, intervalMs = 4500) {
@@ -13,6 +13,7 @@ function useCarousel(length: number, intervalMs = 4500) {
 }
 
 export default function Home() {
+  const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const testimonials = [
     { q: 'Professional and kind. My surgery and recovery were smooth.', a: '— Ama K.' },
@@ -38,6 +39,43 @@ export default function Home() {
     return () => io.disconnect();
   }, []);
 
+  // Handle hash navigation to open modal
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#consultation') {
+        setIsModalOpen(true);
+      }
+    };
+    const handlePopState = () => {
+      handleHashChange();
+    };
+    handleHashChange(); // Check on mount
+    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  // React to location changes (when navigating with React Router)
+  useEffect(() => {
+    if (location.hash === '#consultation') {
+      setIsModalOpen(true);
+    }
+  }, [location.hash]);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+    window.history.pushState(null, '', '#consultation');
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    // Remove hash without triggering navigation
+    window.history.replaceState(null, '', window.location.pathname);
+  };
+
   return (
     <div ref={revealRef}>
       <Helmet>
@@ -48,17 +86,14 @@ export default function Home() {
         <div className="container-1120 grid md:grid-cols-[1.1fr_.9fr] gap-8">
           <div className="space-y-4">
             <h1 className="text-4xl font-semibold reveal-up opacity-0 translate-y-3 transition">
-              Compassionate Care, Modern Medicine
+              We Care to Heal
             </h1>
-            <p className="text-brand-navy font-semibold reveal-up opacity-0 translate-y-3 transition">
-              We Care to Heal !
-            </p>
             <p className="muted reveal-up opacity-0 translate-y-3 transition">
               At Gallena Medical Centre, we deliver trusted, patient-centered healthcare across
               general medicine, dental, maternity, surgery, and more.
             </p>
             <div className="flex gap-3 reveal-up opacity-0 translate-y-3 transition">
-              <button onClick={() => setIsModalOpen(true)} className="btn btn-primary btn-3d">
+              <button onClick={handleOpenModal} className="btn btn-primary btn-3d">
                 Book Consultation
               </button>
               <Link to="/services" className="btn btn-outline btn-3d">
@@ -172,7 +207,7 @@ export default function Home() {
       {isModalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          onClick={() => setIsModalOpen(false)}
+          onClick={handleCloseModal}
         >
           {/* Backdrop */}
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
@@ -185,7 +220,7 @@ export default function Home() {
             <div className="sticky top-0 bg-gradient-to-r from-brand-blue to-brand-green px-6 py-4 flex items-center justify-between z-20">
               <h2 className="text-2xl font-bold text-white font-heading">Book Appointment</h2>
               <button
-                onClick={() => setIsModalOpen(false)}
+                onClick={handleCloseModal}
                 className="text-white hover:text-slate-200 text-2xl font-bold transition-transform duration-300 hover:scale-125"
                 aria-label="Close modal"
               >
@@ -194,7 +229,7 @@ export default function Home() {
             </div>
 
             <div className="p-8">
-              <AppointmentForm onClose={() => setIsModalOpen(false)} />
+              <AppointmentForm onClose={handleCloseModal} />
             </div>
           </div>
         </div>

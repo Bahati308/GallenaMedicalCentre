@@ -75,9 +75,9 @@ export default function Header() {
           </ul>
         </nav>
         <div className="flex items-center gap-3">
-          <a href="#consultation" className="btn btn-primary hidden md:inline-flex animate-fade-in">
+          <Link to="/#consultation" className="btn btn-primary hidden md:inline-flex animate-fade-in">
             Book Consultation
-          </a>
+          </Link>
           <ThemeToggle />
         </div>
       </div>
