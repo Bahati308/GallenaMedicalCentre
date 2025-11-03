@@ -1,8 +1,9 @@
 import { Helmet } from 'react-helmet-async';
 import { useState, useEffect, useRef } from 'react';
+import { submitContactForm, type ContactFormData } from '../utils/formHandler';
 
 export default function Contact() {
-  const [status, setStatus] = useState<'idle' | 'ok' | 'err'>('idle');
+  const [status, setStatus] = useState<'idle' | 'ok' | 'err' | 'loading'>('idle');
   const [msg, setMsg] = useState('');
   const [emailValid, setEmailValid] = useState(true);
   const [emailError, setEmailError] = useState('');
@@ -18,7 +19,7 @@ export default function Contact() {
           if (e.isIntersecting) e.target.classList.add('!opacity-100', '!translate-y-0');
         });
       },
-      { threshold: 0.12 },
+      { threshold: 0.12 }
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
@@ -47,7 +48,8 @@ export default function Contact() {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
     const payload = Object.fromEntries(fd.entries()) as Record<string, string>;
 
     if (!payload.fullName || !payload.email || !payload.message) {
@@ -62,19 +64,33 @@ export default function Contact() {
       return;
     }
 
+    // Prepare form data
+    const formData: ContactFormData = {
+      fullName: payload.fullName,
+      email: payload.email,
+      message: payload.message,
+    };
+
+    setStatus('loading');
+    setMsg('');
+
     try {
-      await new Promise((r) => setTimeout(r, 500));
+      // Submit to API endpoint
+      await submitContactForm(formData);
+
       setMsg('Message sent successfully. We will get back to you shortly.');
       setStatus('ok');
       setEmailValid(true);
       setEmailError('');
-      e.currentTarget.reset();
+      form.reset();
+
       setTimeout(() => {
         setIsModalOpen(false);
         setStatus('idle');
       }, 2000);
-    } catch {
-      setMsg('Failed to send. Please try again later.');
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setMsg(error instanceof Error ? error.message : 'Failed to send. Please try again later.');
       setStatus('err');
     }
   }
@@ -87,8 +103,8 @@ export default function Contact() {
         <div className="max-w-3xl mx-auto text-center mb-12 reveal-up opacity-0 translate-y-3 transition">
           <h1 className="text-5xl font-bold mb-4">Contact Us</h1>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-8">
-            Have a question or need assistance? We're here to help. Reach out to us through any of
-            the channels below.
+            Have a question or need assistance? We&apos;re here to help. Reach out to us through any
+            of the channels below.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <button
@@ -136,7 +152,7 @@ export default function Contact() {
                 <a
                   href="https://wa.me/256787992588"
                   target="_blank"
-                  rel="noopener"
+                  rel="noreferrer"
                   className="flex items-center gap-4 p-4 bg-white rounded-xl hover:shadow-md transition-all duration-300 hover:scale-105 group"
                 >
                   <div className="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center group-hover:bg-green-500/20 transition-colors">
@@ -158,7 +174,7 @@ export default function Contact() {
                 <a
                   href="https://facebook.com/"
                   target="_blank"
-                  rel="noopener"
+                  rel="noreferrer"
                   className="flex items-center gap-4 p-4 bg-white rounded-xl hover:shadow-md transition-all duration-300 hover:scale-105 group"
                 >
                   <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
@@ -265,10 +281,11 @@ export default function Contact() {
                     />
                   </label>
                   <button
-                    className="btn btn-primary btn-3d w-full py-4 text-lg font-bold"
+                    className="btn btn-primary btn-3d w-full py-4 text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                     type="submit"
+                    disabled={status === 'loading'}
                   >
-                    Send Message
+                    {status === 'loading' ? 'Sending...' : 'Send Message'}
                   </button>
                   {status !== 'idle' && (
                     <div

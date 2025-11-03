@@ -19,7 +19,7 @@ function mix(c1: string, c2: string, t: number) {
   return `rgb(${lerp(a.r, b.r, t)}, ${lerp(a.g, b.g, t)}, ${lerp(a.b, b.b, t)})`;
 }
 
-function rgbStringToRgb(str: string) {
+function _rgbStringToRgb(str: string) {
   const m = str.match(/rgb\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\)/i);
   if (!m || m.length < 4) return { r: 255, g: 255, b: 255 };
   return {
@@ -29,7 +29,7 @@ function rgbStringToRgb(str: string) {
   };
 }
 
-function relativeLuminance({ r, g, b }: { r: number; g: number; b: number }) {
+function _relativeLuminance({ r, g, b }: { r: number; g: number; b: number }) {
   const srgb = [r, g, b].map((v) => {
     const c = v / 255;
     return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
@@ -82,7 +82,7 @@ export default function ScrollBg() {
           }
         });
       },
-      { threshold: 0.01, rootMargin: '0px 0px -10% 0px' },
+      { threshold: 0.01, rootMargin: '0px 0px -10% 0px' }
     );
     const candidates = Array.from(document.querySelectorAll('.pop-on-scroll')) as HTMLElement[];
     candidates.forEach((el) => {

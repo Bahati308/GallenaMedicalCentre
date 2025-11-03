@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link, useLocation } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { submitAppointmentForm, type AppointmentFormData } from '../utils/formHandler';
 
 function useCarousel(length: number, intervalMs = 4500) {
   const [index, setIndex] = useState(0);
@@ -12,9 +13,29 @@ function useCarousel(length: number, intervalMs = 4500) {
   return index;
 }
 
+interface Submission {
+  id: string;
+  fullName: string;
+  email: string;
+  phone?: string;
+  preferredDateTime?: string;
+  department?: string;
+  message?: string;
+  timestamp: string;
+}
+
 export default function Home() {
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [appointments, setAppointments] = useState<Submission[]>([]);
+  const [contact, setContact] = useState<Submission[]>([]);
+  const [adminLoading, setAdminLoading] = useState(false);
+  const [adminError, setAdminError] = useState('');
+  const [activeTab, setActiveTab] = useState<'appointments' | 'contact'>('appointments');
+  const [exporting, setExporting] = useState(false);
   const testimonials = [
     { q: 'Professional and kind. My surgery and recovery were smooth.', a: '— Ama K.' },
     { q: 'The pediatric team made my child feel safe and happy.', a: '— Joseph N.' },
@@ -33,7 +54,7 @@ export default function Home() {
           if (e.isIntersecting) e.target.classList.add('!opacity-100', '!translate-y-0');
         });
       },
-      { threshold: 0.12 },
+      { threshold: 0.12 }
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
@@ -62,8 +83,182 @@ export default function Home() {
   useEffect(() => {
     if (location.hash === '#consultation') {
       setIsModalOpen(true);
+    } else if (location.hash === '#admin-login') {
+      setIsAdminModalOpen(true);
     }
   }, [location.hash]);
+
+  function getAuthHeaders() {
+    const token = localStorage.getItem('admin_token');
+    return {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    };
+  }
+
+  const fetchSubmissions = useCallback(async () => {
+    try {
+      setAdminLoading(true);
+      const response = await fetch('/api/submissions', {
+        headers: getAuthHeaders(),
+      });
+
+      if (response.status === 401) {
+        localStorage.removeItem('admin_token');
+        localStorage.removeItem('admin_user');
+        setIsLoggedIn(false);
+        setIsAdminPanelOpen(false);
+        return;
+      }
+
+      if (!response.ok) {
+        let errorMessage = 'Failed to fetch submissions';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorData.message || errorMessage;
+        } catch {
+          errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Server returned non-JSON response. Is the backend running?');
+      }
+
+      const data = await response.json();
+      setAppointments(data.appointments || []);
+      setContact(data.contact || []);
+      setAdminError('');
+    } catch (err) {
+      setAdminError(err instanceof Error ? err.message : 'Failed to load submissions');
+      console.error('Error fetching submissions:', err);
+    } finally {
+      setAdminLoading(false);
+    }
+  }, []);
+
+  // Check if user is logged in
+  useEffect(() => {
+    const token = localStorage.getItem('admin_token');
+    setIsLoggedIn(!!token);
+  }, []);
+
+  // Fetch submissions when logged in
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchSubmissions();
+    }
+  }, [isLoggedIn, fetchSubmissions]);
+
+  async function deleteSubmission(type: 'appointments' | 'contact', id: string) {
+    if (!confirm('Are you sure you want to delete this submission?')) return;
+
+    try {
+      const response = await fetch(`/api/submissions/${type}/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+
+      if (response.status === 401) {
+        localStorage.removeItem('admin_token');
+        setIsLoggedIn(false);
+        setIsAdminPanelOpen(false);
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error('Failed to delete submission');
+      }
+      fetchSubmissions();
+    } catch (err) {
+      alert('Failed to delete submission');
+      console.error('Error deleting submission:', err);
+    }
+  }
+
+  async function exportData(format: 'csv' | 'xlsx') {
+    try {
+      setExporting(true);
+      const type = activeTab === 'appointments' ? 'appointments' : 'contact';
+      const response = await fetch(`/api/submissions/export/${format}?type=${type}`, {
+        headers: getAuthHeaders(),
+      });
+
+      if (response.status === 401) {
+        localStorage.removeItem('admin_token');
+        setIsLoggedIn(false);
+        setIsAdminPanelOpen(false);
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error('Failed to export data');
+      }
+
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let filename = `submissions-${Date.now()}.${format}`;
+      if (contentDisposition) {
+        const matches = contentDisposition.match(/filename="(.+)"/);
+        if (matches && matches[1]) filename = matches[1];
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (err) {
+      alert('Failed to export data');
+      console.error('Error exporting:', err);
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  function handleAdminLogin(username: string, password: string) {
+    return fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    })
+      .then((response) => {
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Server returned non-JSON response. Is the backend running?');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (!data.token) {
+          throw new Error(data.error || 'Login failed');
+        }
+        localStorage.setItem('admin_token', data.token);
+        localStorage.setItem('admin_user', JSON.stringify(data.user));
+        setIsLoggedIn(true);
+        setIsAdminModalOpen(false);
+        setIsAdminPanelOpen(true);
+        fetchSubmissions();
+        return { success: true };
+      })
+      .catch((err) => {
+        throw err instanceof Error ? err : new Error('Login failed');
+      });
+  }
+
+  function handleLogout() {
+    localStorage.removeItem('admin_token');
+    localStorage.removeItem('admin_user');
+    setIsLoggedIn(false);
+    setIsAdminPanelOpen(false);
+    setAppointments([]);
+    setContact([]);
+  }
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -79,7 +274,7 @@ export default function Home() {
   return (
     <div ref={revealRef}>
       <Helmet>
-        <title>Gallena Medical Centre | Healthcare with Trust</title>
+        <title>Gallena Medical Centre | We care to heal</title>
       </Helmet>
 
       <section className="py-16">
@@ -360,12 +555,283 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Admin Panel Section */}
+      {isLoggedIn && (
+        <section
+          id="admin-panel"
+          className="py-16 border-t-4 border-brand-blue bg-slate-50 dark:bg-slate-900"
+        >
+          <div className="container-1120">
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h2 className="text-3xl font-bold mb-2">Admin Dashboard</h2>
+                <p className="text-slate-600">View and manage form submissions</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setIsAdminPanelOpen(!isAdminPanelOpen)}
+                  className="btn btn-outline"
+                >
+                  {isAdminPanelOpen ? '▼ Collapse' : '▲ Expand'}
+                </button>
+                <button onClick={handleLogout} className="btn btn-outline text-red-600">
+                  Logout
+                </button>
+              </div>
+            </div>
+
+            {isAdminPanelOpen && (
+              <div className="space-y-6">
+                {adminError && (
+                  <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg">
+                    {adminError}
+                  </div>
+                )}
+
+                {/* Export buttons */}
+                <div className="flex gap-3 flex-wrap">
+                  <button
+                    onClick={() => exportData('csv')}
+                    disabled={
+                      exporting ||
+                      (activeTab === 'appointments'
+                        ? appointments.length === 0
+                        : contact.length === 0)
+                    }
+                    className="btn btn-outline disabled:opacity-50"
+                  >
+                    {exporting
+                      ? 'Exporting...'
+                      : `Export ${activeTab === 'appointments' ? 'Appointments' : 'Contact'} CSV`}
+                  </button>
+                  <button
+                    onClick={() => exportData('xlsx')}
+                    disabled={
+                      exporting ||
+                      (activeTab === 'appointments'
+                        ? appointments.length === 0
+                        : contact.length === 0)
+                    }
+                    className="btn btn-outline disabled:opacity-50"
+                  >
+                    {exporting
+                      ? 'Exporting...'
+                      : `Export ${activeTab === 'appointments' ? 'Appointments' : 'Contact'} Excel`}
+                  </button>
+                  <button
+                    onClick={fetchSubmissions}
+                    className="btn btn-outline"
+                    disabled={adminLoading}
+                  >
+                    {adminLoading ? 'Refreshing...' : 'Refresh'}
+                  </button>
+                </div>
+
+                {/* Tabs */}
+                <div className="flex gap-4 border-b border-slate-200">
+                  <button
+                    onClick={() => setActiveTab('appointments')}
+                    className={`px-6 py-3 font-semibold transition-colors ${
+                      activeTab === 'appointments'
+                        ? 'border-b-2 border-brand-blue text-brand-blue'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Appointments ({appointments.length})
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('contact')}
+                    className={`px-6 py-3 font-semibold transition-colors ${
+                      activeTab === 'contact'
+                        ? 'border-b-2 border-brand-blue text-brand-blue'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Contact ({contact.length})
+                  </button>
+                </div>
+
+                {/* Submissions List */}
+                {adminLoading ? (
+                  <div className="text-center py-12">
+                    <div className="text-slate-500">Loading submissions...</div>
+                  </div>
+                ) : (activeTab === 'appointments' ? appointments : contact).length === 0 ? (
+                  <div className="text-center py-12">
+                    <div className="text-slate-500 text-lg">No {activeTab} submissions yet.</div>
+                  </div>
+                ) : (
+                  <div className="space-y-4 max-h-[600px] overflow-y-auto">
+                    {(activeTab === 'appointments' ? appointments : contact).map((submission) => (
+                      <div key={submission.id} className="card card-3d">
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <h3 className="font-bold text-xl mb-1">{submission.fullName}</h3>
+                            <p className="text-slate-600">{submission.email}</p>
+                            {submission.phone && (
+                              <p className="text-slate-600">Phone: {submission.phone}</p>
+                            )}
+                          </div>
+                          <button
+                            onClick={() => deleteSubmission(activeTab, submission.id)}
+                            className="text-red-600 hover:text-red-800 font-semibold"
+                          >
+                            Delete
+                          </button>
+                        </div>
+
+                        {submission.preferredDateTime && (
+                          <div className="mb-2">
+                            <strong>Preferred Date & Time:</strong>{' '}
+                            {new Date(submission.preferredDateTime).toLocaleString()}
+                          </div>
+                        )}
+
+                        {submission.department && (
+                          <div className="mb-2">
+                            <strong>Department:</strong> {submission.department}
+                          </div>
+                        )}
+
+                        {submission.message && (
+                          <div className="mb-2">
+                            <strong>Message:</strong>
+                            <p className="mt-1 text-slate-700">{submission.message}</p>
+                          </div>
+                        )}
+
+                        <div className="text-sm text-slate-500 mt-4">
+                          Submitted: {new Date(submission.timestamp).toLocaleString()}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Admin Login Modal */}
+      {isAdminModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={() => setIsAdminModalOpen(false)}
+        >
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
+          <div
+            className="relative bg-white rounded-2xl shadow-2xl w-[95vw] md:w-[500px] max-h-[90vh] overflow-y-auto animate-bounce-in-3d z-10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <AdminLoginModal
+              onClose={() => setIsAdminModalOpen(false)}
+              onLogin={handleAdminLogin}
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AdminLoginModal({
+  onClose,
+  onLogin,
+}: {
+  onClose: () => void;
+  onLogin: (username: string, password: string) => Promise<{ success: boolean }>;
+}) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      await onLogin(username, password);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="p-8">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">Admin Login</h2>
+        <button
+          onClick={onClose}
+          className="text-slate-600 hover:text-slate-900 text-2xl font-bold transition-transform duration-300 hover:scale-125"
+          aria-label="Close modal"
+        >
+          ✕
+        </button>
+      </div>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg mb-4">
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <label className="flex flex-col gap-2">
+          <span className="font-semibold text-slate-900">Username</span>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            className="form-input-modern"
+            placeholder="Enter username"
+            autoFocus
+          />
+        </label>
+
+        <label className="flex flex-col gap-2">
+          <span className="font-semibold text-slate-900">Password</span>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="form-input-modern"
+            placeholder="Enter password"
+          />
+        </label>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="btn btn-primary btn-3d w-full py-4 text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
+      </form>
+
+      <div className="mt-6 p-4 bg-slate-50 rounded-lg text-sm text-slate-600">
+        <p className="font-semibold mb-2">Default Credentials (Development):</p>
+        <p>
+          Username: <code className="bg-white px-2 py-1 rounded">admin</code>
+        </p>
+        <p>
+          Password: <code className="bg-white px-2 py-1 rounded">admin123</code>
+        </p>
+        <p className="mt-2 text-xs text-red-600">⚠️ Change these in production!</p>
+      </div>
     </div>
   );
 }
 
 function AppointmentForm({ onClose }: { onClose?: () => void }) {
-  const [status, setStatus] = useState<'idle' | 'ok' | 'err'>('idle');
+  const [status, setStatus] = useState<'idle' | 'ok' | 'err' | 'loading'>('idle');
   const [msg, setMsg] = useState('');
   const [emailValid, setEmailValid] = useState(true);
   const [emailError, setEmailError] = useState('');
@@ -393,8 +859,11 @@ function AppointmentForm({ onClose }: { onClose?: () => void }) {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
     const payload = Object.fromEntries(fd.entries()) as Record<string, string>;
+
+    // Validation
     if (
       !payload.fullName ||
       !payload.email ||
@@ -413,21 +882,42 @@ function AppointmentForm({ onClose }: { onClose?: () => void }) {
       return;
     }
 
+    // Prepare form data
+    const formData: AppointmentFormData = {
+      fullName: payload.fullName,
+      email: payload.email,
+      phone: payload.phone,
+      preferredDateTime: payload.preferredDateTime,
+      department: payload.department,
+      message: payload.message || undefined,
+    };
+
+    setStatus('loading');
+    setMsg('');
+
     try {
-      await new Promise((r) => setTimeout(r, 600));
+      // Submit to API endpoint
+      await submitAppointmentForm(formData);
+
       setMsg('Appointment request sent successfully. We will contact you shortly.');
       setStatus('ok');
       setEmailValid(true);
       setEmailError('');
-      e.currentTarget.reset();
+      form.reset();
+
       if (onClose) {
         setTimeout(() => {
           onClose();
           setStatus('idle');
         }, 2000);
       }
-    } catch {
-      setMsg('Something went wrong. Please try again later or contact us.');
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setMsg(
+        error instanceof Error
+          ? error.message
+          : 'Something went wrong. Please try again later or contact us.'
+      );
       setStatus('err');
     }
   }
@@ -509,8 +999,12 @@ function AppointmentForm({ onClose }: { onClose?: () => void }) {
             placeholder="Any additional details about your appointment needs..."
           />
         </label>
-        <button type="submit" className="btn btn-primary btn-3d w-full py-4 text-lg font-bold">
-          Book Appointment
+        <button
+          type="submit"
+          disabled={status === 'loading'}
+          className="btn btn-primary btn-3d w-full py-4 text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {status === 'loading' ? 'Sending...' : 'Book Appointment'}
         </button>
         {status !== 'idle' && (
           <div

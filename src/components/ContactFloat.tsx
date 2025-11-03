@@ -21,7 +21,7 @@ export default function ContactFloat() {
         aria-label="WhatsApp"
         href="https://wa.me/256787992588"
         target="_blank"
-        rel="noopener"
+        rel="noreferrer"
         className="grid place-items-center w-10 h-10 rounded-xl bg-[#eef8f8] text-[#0b3b4f] no-underline border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] dark:bg-slate-900 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:bg-emerald-50 active:scale-95"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

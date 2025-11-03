@@ -1,15 +1,49 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [elevated, setElevated] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const onScroll = () => setElevated(window.scrollY > 4);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem('admin_token');
+      setIsLoggedIn(!!token);
+    };
+    checkAuth();
+    // Listen for storage changes (e.g., logout)
+    window.addEventListener('storage', checkAuth);
+    const interval = setInterval(checkAuth, 1000); // Check every second
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+      clearInterval(interval);
+    };
+  }, []);
+
+  function handleAdminClick() {
+    if (isLoggedIn) {
+      // Scroll to admin panel
+      navigate('/');
+      setTimeout(() => {
+        const adminPanel = document.getElementById('admin-panel');
+        if (adminPanel) {
+          adminPanel.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      // Open login modal - this will be handled by Home component
+      navigate('/#admin-login');
+    }
+  }
   return (
     <header
       id="site-header"
@@ -20,9 +54,11 @@ export default function Header() {
           to="/"
           className="inline-flex items-center gap-2 no-underline text-white font-semibold group transition-transform duration-300 hover:scale-105"
         >
-          <span className="grid place-items-center w-7 h-7 rounded-lg text-white font-bold bg-white/20 shadow-md shadow-white/20 transition-all duration-300 group-hover:rotate-12 group-hover:shadow-lg group-hover:shadow-white/30 animate-tilt-3d">
-            +
-          </span>
+          <img
+            src="/logo.svg"
+            alt="Gallena Medical Centre Logo"
+            className="w-10 h-10 transition-all duration-300 group-hover:rotate-12 group-hover:shadow-lg group-hover:shadow-white/30 animate-tilt-3d"
+          />
           <span className="whitespace-nowrap text-white text-xl md:text-2xl italic font-heading">
             Gallena Medical Centre
           </span>
@@ -43,7 +79,7 @@ export default function Header() {
             <li>
               <NavLink
                 to="/services"
-                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-transform duration-300 hover:scale-[1.3] font-heading"
+                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-all duration-300 hover:scale-[1.3] font-heading"
               >
                 Services
               </NavLink>
@@ -51,7 +87,7 @@ export default function Header() {
             <li>
               <NavLink
                 to="/staff"
-                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-transform duration-300 hover:scale-[1.3] font-heading"
+                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-all duration-300 hover:scale-[1.3] font-heading"
               >
                 Staff
               </NavLink>
@@ -59,7 +95,7 @@ export default function Header() {
             <li>
               <NavLink
                 to="/blog"
-                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-transform duration-300 hover:scale-[1.3] font-heading"
+                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-all duration-300 hover:scale-[1.3] font-heading"
               >
                 Blog
               </NavLink>
@@ -67,7 +103,7 @@ export default function Header() {
             <li>
               <NavLink
                 to="/contact"
-                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-transform duration-300 hover:scale-[1.3] font-heading"
+                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-all duration-300 hover:scale-[1.3] font-heading"
               >
                 Contact
               </NavLink>
@@ -75,7 +111,17 @@ export default function Header() {
           </ul>
         </nav>
         <div className="flex items-center gap-3">
-          <Link to="/#consultation" className="btn btn-primary hidden md:inline-flex animate-fade-in">
+          <button
+            onClick={handleAdminClick}
+            className="btn btn-outline hidden md:inline-flex text-sm px-3 py-2"
+            title={isLoggedIn ? 'View Admin Panel' : 'Admin Login'}
+          >
+            {isLoggedIn ? '👤 Admin' : '🔐 Admin'}
+          </button>
+          <Link
+            to="/#consultation"
+            className="btn btn-primary hidden md:inline-flex animate-fade-in"
+          >
             Book Consultation
           </Link>
           <ThemeToggle />

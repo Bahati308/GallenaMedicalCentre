@@ -44,7 +44,7 @@ export default function Services() {
           if (e.isIntersecting) e.target.classList.add('!opacity-100', '!translate-y-0');
         });
       },
-      { threshold: 0.12 },
+      { threshold: 0.12 }
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();

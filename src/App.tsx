@@ -8,6 +8,7 @@ import Services from './pages/Services';
 import Staff from './pages/Staff';
 import Blog from './pages/Blog';
 import Contact from './pages/Contact';
+import Login from './pages/Login';
 import Chatbot from './components/Chatbot';
 import ContactFloat from './components/ContactFloat';
 
@@ -36,6 +37,7 @@ export default function App() {
           <Route path="/staff" element={<Staff />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </main>
       <Footer />

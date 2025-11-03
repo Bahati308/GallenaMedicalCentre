@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 export default function Footer() {
-  const year = new Date().getFullYear();
+  const _year = new Date().getFullYear();
   return (
     <footer className="site-footer">
       <div className="container-1120 flex flex-col md:flex-row justify-between gap-5 py-3 footer-inner">
@@ -10,9 +10,7 @@ export default function Footer() {
             to="/"
             className="inline-flex items-center gap-2 no-underline text-slate-900 font-semibold"
           >
-            <span className="grid place-items-center w-7 h-7 rounded-lg text-white font-bold bg-gradient-to-tr from-brand-blue to-brand-green">
-              +
-            </span>
+            <img src="/logo.svg" alt="Gallena Medical Centre Logo" className="w-10 h-10" />
             <span>Gallena Medical Centre</span>
           </Link>
           <p className="text-black italic text-2xl">We Care to Heal !</p>
@@ -24,7 +22,7 @@ export default function Footer() {
                 aria-label="Facebook"
                 href="https://facebook.com/"
                 target="_blank"
-                rel="noopener"
+                rel="noreferrer"
                 className="grid place-items-center w-10 h-10 rounded-xl bg-[#eef8f8] text-black no-underline border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] dark:bg-slate-900 pop-on-scroll visible transition-all duration-300 hover:scale-110 hover:shadow-xl hover:bg-blue-50 active:scale-95"
               >
                 <svg
@@ -43,7 +41,7 @@ export default function Footer() {
                 aria-label="WhatsApp"
                 href="https://wa.me/256787992588"
                 target="_blank"
-                rel="noopener"
+                rel="noreferrer"
                 className="grid place-items-center w-10 h-10 rounded-xl bg-[#eef8f8] text-black no-underline pop-on-scroll visible border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] dark:bg-slate-900 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:bg-emerald-50 active:scale-95"
               >
                 <svg

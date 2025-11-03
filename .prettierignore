@@ -1,0 +1,51 @@
+# Dependencies
+node_modules
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist
+dist-ssr
+build
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Data files (contain sensitive info)
+submissions.json
+users.json
+
+# Logs
+*.log
+logs
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Generated files
+coverage
+*.min.js
+*.min.css
+
+# Public assets (usually already formatted)
+public/*.svg
+public/*.png
+public/*.jpg
+public/*.jpeg
+
+# Config files that should keep their format
+netlify.toml
+.github/**/*.yml
+.github/**/*.yaml
+
