@@ -109,7 +109,7 @@ export default function Chatbot() {
         </button>
       )}
       {open && (
-        <div className="w-80 max-w-[92vw] h-[480px] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-soft bg-white dark:bg-slate-900 overflow-hidden flex flex-col animate-bounce-in-3d">
+        <div className="w-80 max-w-[92vw] h-[480px] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-soft bg-white dark:bg-[#050505] overflow-hidden flex flex-col animate-bounce-in-3d">
           <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-[#0b3b4f]">
             <div className="flex items-center gap-2">
               <span className="grid place-items-center w-6 h-6 rounded-md text-white text-xs font-bold bg-[#0b3b4f]">
@@ -125,7 +125,7 @@ export default function Chatbot() {
             {messages.map((m, i) => (
               <div key={i} className={`max-w-[85%] ${m.role === 'user' ? 'ml-auto' : ''}`}>
                 <div
-                  className={`${m.role === 'user' ? 'bg-sky-100 text-slate-900' : 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100'} px-3 py-2 rounded-xl`}
+                  className={`${m.role === 'user' ? 'bg-sky-100 text-slate-900' : 'bg-slate-100 text-slate-900 dark:bg-[#111111] dark:text-slate-100'} px-3 py-2 rounded-xl`}
                 >
                   {m.text}
                 </div>
@@ -139,7 +139,7 @@ export default function Chatbot() {
                 <button
                   key={s}
                   onClick={() => send(s)}
-                  className="text-xs px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="text-xs px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#111111]"
                 >
                   {s}
                 </button>
@@ -150,7 +150,7 @@ export default function Chatbot() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Type your question..."
-                className="flex-1 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
+                className="flex-1 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#050505] text-slate-900 dark:text-slate-100"
               />
               <button type="submit" className="btn btn-primary">
                 Send

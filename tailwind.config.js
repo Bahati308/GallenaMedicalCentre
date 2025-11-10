@@ -19,17 +19,20 @@ export default {
       },
       fontFamily: {
         sans: [
-          'Inter',
-          'system-ui',
-          '-apple-system',
-          'BlinkMacSystemFont',
-          'Segoe UI',
-          'Roboto',
-          'Helvetica Neue',
+          '"IBM Plex Sans"',
+          '"Helvetica Neue"',
+          'Helvetica',
           'Arial',
           'sans-serif',
         ],
-        heading: ['Oswald', 'Impact', 'sans-serif'],
+        heading: [
+          '"IBM Plex Sans Condensed"',
+          '"IBM Plex Sans"',
+          '"Helvetica Neue"',
+          'Helvetica',
+          'Arial',
+          'sans-serif',
+        ],
       },
     },
     container: {

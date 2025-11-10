@@ -43,9 +43,10 @@ export default function ScrollBg() {
       const root = document.documentElement;
       if (root.classList.contains('dark')) {
         // Dark mode: fixed black background
-        root.style.setProperty('--page-bg', '#0b0b0b');
+        root.style.setProperty('--page-bg', '#000000');
         root.style.setProperty('--text-color', '#e2e8f0');
         root.style.setProperty('--muted-color', '#94a3b8');
+        document.body.style.backgroundColor = '#000000';
       } else {
         // Light mode: animate background based on scroll
         const white = '#ffffff';
@@ -67,6 +68,7 @@ export default function ScrollBg() {
         root.style.setProperty('--page-bg', color);
         root.style.setProperty('--text-color', '#000000');
         root.style.setProperty('--muted-color', '#000000');
+        document.body.style.backgroundColor = '';
       }
     };
     onScroll();

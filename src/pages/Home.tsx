@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
-import { Link, useLocation } from 'react-router-dom';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 import { submitAppointmentForm, type AppointmentFormData } from '../utils/formHandler';
 
 function useCarousel(length: number, intervalMs = 4500) {
@@ -13,34 +13,29 @@ function useCarousel(length: number, intervalMs = 4500) {
   return index;
 }
 
-interface Submission {
-  id: string;
-  fullName: string;
-  email: string;
-  phone?: string;
-  preferredDateTime?: string;
-  department?: string;
-  message?: string;
-  timestamp: string;
-}
-
 export default function Home() {
-  const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
-  const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [appointments, setAppointments] = useState<Submission[]>([]);
-  const [contact, setContact] = useState<Submission[]>([]);
-  const [adminLoading, setAdminLoading] = useState(false);
-  const [adminError, setAdminError] = useState('');
-  const [activeTab, setActiveTab] = useState<'appointments' | 'contact'>('appointments');
-  const [exporting, setExporting] = useState(false);
+  const gallery = [
+    { src: '/imagetwo.jpg', alt: 'Sunlit outpatient lounge with comfortable seating' },
+    { src: '/imagethree.jpg', alt: 'Nurses collaborating at the nursing station' },
+    { src: '/image5.jpg', alt: 'Modern surgical suite prepared for procedures' },
+    { src: '/image6.jpg', alt: 'Pediatric recovery bed with gentle décor' },
+    { src: '/image7.jpg', alt: 'Dental treatment room equipped for patient care' },
+    { src: '/image8.jpg', alt: 'Maternity ward with attentive midwives' },
+    { src: '/image9.jpg', alt: 'Diagnostic laboratory with advanced equipment' },
+    { src: '/image10.jpg', alt: 'Fully stocked pharmacy and counselling desk' },
+    { src: '/image11.jpg', alt: 'Orthopedic physiotherapy and rehabilitation area' },
+    { src: '/image12.jpg', alt: 'Cardiology monitoring suite with specialists' },
+    { src: '/image13.jpg', alt: 'Exterior of Gallena Medical Centre at dusk' },
+    { src: '/image14.jpg', alt: 'Reception team welcoming arriving patients' },
+    { src: '/image15.jpg', alt: 'Community outreach event hosted by Gallena Medical Centre' },
+  ];
   const testimonials = [
     { q: 'Professional and kind. My surgery and recovery were smooth.', a: '— Ama K.' },
     { q: 'The pediatric team made my child feel safe and happy.', a: '— Joseph N.' },
     { q: 'Easy booking and excellent dental care. Highly recommended!', a: '— Lydia A.' },
   ];
+  const gIndex = useCarousel(gallery.length, 5000);
   const tIndex = useCarousel(testimonials.length);
 
   // simple intersection reveal
@@ -79,187 +74,6 @@ export default function Home() {
     };
   }, []);
 
-  // React to location changes (when navigating with React Router)
-  useEffect(() => {
-    if (location.hash === '#consultation') {
-      setIsModalOpen(true);
-    } else if (location.hash === '#admin-login') {
-      setIsAdminModalOpen(true);
-    }
-  }, [location.hash]);
-
-  function getAuthHeaders() {
-    const token = localStorage.getItem('admin_token');
-    return {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    };
-  }
-
-  const fetchSubmissions = useCallback(async () => {
-    try {
-      setAdminLoading(true);
-      const response = await fetch('/api/submissions', {
-        headers: getAuthHeaders(),
-      });
-
-      if (response.status === 401) {
-        localStorage.removeItem('admin_token');
-        localStorage.removeItem('admin_user');
-        setIsLoggedIn(false);
-        setIsAdminPanelOpen(false);
-        return;
-      }
-
-      if (!response.ok) {
-        let errorMessage = 'Failed to fetch submissions';
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.error || errorData.message || errorMessage;
-        } catch {
-          errorMessage = `HTTP ${response.status}: ${response.statusText}`;
-        }
-        throw new Error(errorMessage);
-      }
-
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('Server returned non-JSON response. Is the backend running?');
-      }
-
-      const data = await response.json();
-      setAppointments(data.appointments || []);
-      setContact(data.contact || []);
-      setAdminError('');
-    } catch (err) {
-      setAdminError(err instanceof Error ? err.message : 'Failed to load submissions');
-      console.error('Error fetching submissions:', err);
-    } finally {
-      setAdminLoading(false);
-    }
-  }, []);
-
-  // Check if user is logged in
-  useEffect(() => {
-    const token = localStorage.getItem('admin_token');
-    setIsLoggedIn(!!token);
-  }, []);
-
-  // Fetch submissions when logged in
-  useEffect(() => {
-    if (isLoggedIn) {
-      fetchSubmissions();
-    }
-  }, [isLoggedIn, fetchSubmissions]);
-
-  async function deleteSubmission(type: 'appointments' | 'contact', id: string) {
-    if (!confirm('Are you sure you want to delete this submission?')) return;
-
-    try {
-      const response = await fetch(`/api/submissions/${type}/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders(),
-      });
-
-      if (response.status === 401) {
-        localStorage.removeItem('admin_token');
-        setIsLoggedIn(false);
-        setIsAdminPanelOpen(false);
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error('Failed to delete submission');
-      }
-      fetchSubmissions();
-    } catch (err) {
-      alert('Failed to delete submission');
-      console.error('Error deleting submission:', err);
-    }
-  }
-
-  async function exportData(format: 'csv' | 'xlsx') {
-    try {
-      setExporting(true);
-      const type = activeTab === 'appointments' ? 'appointments' : 'contact';
-      const response = await fetch(`/api/submissions/export/${format}?type=${type}`, {
-        headers: getAuthHeaders(),
-      });
-
-      if (response.status === 401) {
-        localStorage.removeItem('admin_token');
-        setIsLoggedIn(false);
-        setIsAdminPanelOpen(false);
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error('Failed to export data');
-      }
-
-      const contentDisposition = response.headers.get('Content-Disposition');
-      let filename = `submissions-${Date.now()}.${format}`;
-      if (contentDisposition) {
-        const matches = contentDisposition.match(/filename="(.+)"/);
-        if (matches && matches[1]) filename = matches[1];
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (err) {
-      alert('Failed to export data');
-      console.error('Error exporting:', err);
-    } finally {
-      setExporting(false);
-    }
-  }
-
-  function handleAdminLogin(username: string, password: string) {
-    return fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    })
-      .then((response) => {
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          throw new Error('Server returned non-JSON response. Is the backend running?');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (!data.token) {
-          throw new Error(data.error || 'Login failed');
-        }
-        localStorage.setItem('admin_token', data.token);
-        localStorage.setItem('admin_user', JSON.stringify(data.user));
-        setIsLoggedIn(true);
-        setIsAdminModalOpen(false);
-        setIsAdminPanelOpen(true);
-        fetchSubmissions();
-        return { success: true };
-      })
-      .catch((err) => {
-        throw err instanceof Error ? err : new Error('Login failed');
-      });
-  }
-
-  function handleLogout() {
-    localStorage.removeItem('admin_token');
-    localStorage.removeItem('admin_user');
-    setIsLoggedIn(false);
-    setIsAdminPanelOpen(false);
-    setAppointments([]);
-    setContact([]);
-  }
-
   const handleOpenModal = () => {
     setIsModalOpen(true);
     window.history.pushState(null, '', '#consultation');
@@ -297,7 +111,15 @@ export default function Home() {
             </div>
           </div>
           <div aria-hidden className="reveal-up opacity-0 translate-y-3 transition">
-            <div className="w-full h-[280px] rounded-2xl border border-slate-200 shadow-soft bg-[radial-gradient(1200px_300px_at_-10%_-10%,#e6fffb_10%,transparent_40%),conic-gradient(from_0deg_at_50%_50%,rgba(16,185,129,.15),rgba(14,165,233,.15),rgba(14,165,233,.06),rgba(16,185,129,.06))] dark:hidden animate-float-3d"></div>
+            <div className="w-full h-[280px] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-soft overflow-hidden animate-float-3d">
+              <img
+                src="/logo.jpg"
+                alt="Gallena Medical Centre at a glance"
+                role="presentation"
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -344,7 +166,7 @@ export default function Home() {
 
       <section
         id="services"
-        className="py-16 bg-gradient-to-b from-[#f4fbfb] to-transparent dark:bg-transparent dark:bg-black"
+        className="py-16 bg-gradient-to-b from-[#f4fbfb] via-[#f4fbfb] to-transparent dark:bg-black dark:from-black dark:via-black dark:to-transparent"
       >
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
@@ -355,24 +177,32 @@ export default function Home() {
               Comprehensive services delivered by specialists across key disciplines.
             </p>
           </div>
-          <div className="grid gap-5 md:grid-cols-4">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {[
-              'General Medicine',
-              'Dental',
-              'Maternity',
-              'Surgery',
-              'Pediatrics',
-              'Cardiology',
-              'Orthopedics',
-              'Laboratory',
-            ].map((s, idx) => (
+              {
+                t: 'General Consultation',
+                d: 'Thorough primary-care visits with personalised treatment plans and preventive screenings.',
+              },
+              {
+                t: 'Specialist Clinics',
+                d: 'Focused reviews across cardiology, pediatrics, orthopedics, ENT, dermatology, and more.',
+              },
+              {
+                t: 'Outpatient Services',
+                d: 'Same-day diagnostics, wound care, infusions, and follow-up visits without admission.',
+              },
+              {
+                t: 'Minor & Major Surgeries',
+                d: 'Elective and emergency procedures in fully equipped theatres with attentive recovery care.',
+              },
+            ].map((service, idx) => (
               <article
-                key={idx}
+                key={service.t}
                 className={`card card-3d reveal-up opacity-0 translate-y-3 transition`}
                 style={{ transitionDelay: `${idx * 0.05}s` }}
               >
-                <h3 className="font-semibold text-lg">{s}</h3>
-                <p className="muted">Learn more about our {s.toLowerCase()} services.</p>
+                <h3 className="font-semibold text-lg">{service.t}</h3>
+                <p className="muted">{service.d}</p>
               </article>
             ))}
           </div>
@@ -384,20 +214,57 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="consultation" className="py-16">
+      <section
+        id="tour"
+        className="py-16 bg-gradient-to-b from-[#f4fbfb] via-transparent to-[#eef8f8] dark:bg-black dark:from-black dark:via-black/20 dark:to-black"
+      >
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
             <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
-              Book a Consultation
+              Take a Quick Tour
             </h2>
             <p className="muted">
-              Complete the form and our team will contact you to confirm your appointment.
+              Step inside our space and see the environment where compassionate care comes first.
             </p>
           </div>
-          {/* Appointment form would have been here - now in modal */}
+          <div className="relative">
+            <div className="overflow-hidden">
+              <div
+                className="flex transition-transform duration-500 ease-out"
+                style={{ transform: `translateX(-${gIndex * 100}%)` }}
+              >
+                {gallery.map((item, idx) => (
+                  <article
+                    key={item.src}
+                    className="w-full flex-shrink-0 px-1"
+                    style={{ minWidth: '100%' }}
+                  >
+                    <div className="card card-3d overflow-hidden p-0">
+                      <img
+                        src={item.src}
+                        alt={item.alt}
+                        className="w-full h-[320px] object-cover"
+                        loading={idx === 0 ? 'eager' : 'lazy'}
+                      />
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-center gap-2 mt-6">
+              {gallery.map((_, idx) => (
+                <span
+                  key={idx}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    idx === gIndex ? 'w-6 bg-brand-blue' : 'w-2 bg-slate-300 dark:bg-slate-600'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </section>
-
+      
       {/* Appointment Modal */}
       {isModalOpen && (
         <div
@@ -409,7 +276,7 @@ export default function Home() {
 
           {/* Modal Content */}
           <div
-            className="relative bg-white rounded-2xl shadow-2xl w-[95vw] md:w-[60vw] max-h-[90vh] overflow-y-auto animate-bounce-in-3d z-10"
+            className="relative bg-white dark:bg-[#050505] rounded-2xl shadow-2xl w-[95vw] md:w-[60vw] max-h-[90vh] overflow-y-auto animate-bounce-in-3d z-10"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="sticky top-0 bg-gradient-to-r from-brand-blue to-brand-green px-6 py-4 flex items-center justify-between z-20">
@@ -432,7 +299,7 @@ export default function Home() {
 
       <section
         id="staff"
-        className="py-16 bg-gradient-to-b from-[#f4fbfb] to-transparent dark:bg-transparent dark:bg-black"
+        className="py-16 bg-gradient-to-b from-[#f4fbfb] via-[#f4fbfb] to-transparent dark:bg-black dark:from-black dark:via-black dark:to-transparent"
       >
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
@@ -469,7 +336,7 @@ export default function Home() {
                 className={`card card-3d reveal-up opacity-0 translate-y-3 transition`}
                 style={{ transitionDelay: `${idx * 0.05}s` }}
               >
-                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-100 to-cyan-100 border border-slate-200 mb-2 dark:bg-slate-800 dark:border-slate-700 animate-tilt-3d" />
+                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-100 to-cyan-100 border border-slate-200 mb-2 dark:bg-[#0f172a] dark:bg-none dark:border-slate-700 animate-tilt-3d" />
                 <h3 className="font-semibold">{p.n}</h3>
                 <p className="muted">{p.t}</p>
                 <p>{p.d}</p>
@@ -512,7 +379,7 @@ export default function Home() {
                 className={`card card-3d reveal-up opacity-0 translate-y-3 transition`}
                 style={{ transitionDelay: `${idx * 0.1}s` }}
               >
-                <div className="w-full h-36 rounded-xl bg-gradient-to-tr from-sky-100 to-emerald-100 border border-slate-200 mb-2" />
+                <div className="w-full h-36 rounded-xl bg-gradient-to-tr from-sky-100 to-emerald-100 border border-slate-200 mb-2 dark:bg-[#0f172a] dark:bg-none dark:border-slate-700" />
                 <h3 className="font-semibold">{p.t}</h3>
                 <p className="muted">{p.d}</p>
                 <Link to="/blog" className="text-brand-navy font-semibold">
@@ -531,7 +398,7 @@ export default function Home() {
 
       <section
         id="testimonials"
-        className="py-16 bg-gradient-to-b from-[#f4fbfb] to-transparent dark:bg-transparent dark:bg-black"
+        className="py-16 bg-gradient-to-b from-[#f4fbfb] via-[#f4fbfb] to-transparent dark:bg-black dark:from-black dark:via-black dark:to-transparent"
       >
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
@@ -541,291 +408,58 @@ export default function Home() {
             <p className="muted">Real stories from those we serve.</p>
           </div>
           <div className="relative">
-            <div className="grid grid-cols-1">
-              {testimonials.map((t, idx) => (
-                <figure
+            <div className="overflow-hidden">
+              <div
+                className="flex transition-transform duration-500 ease-out"
+                style={{ transform: `translateX(-${tIndex * 100}%)` }}
+              >
+                {testimonials.map((t, idx) => (
+                  <article
+                    key={idx}
+                    className="w-full flex-shrink-0 px-1"
+                    style={{ minWidth: '100%' }}
+                  >
+                    <div className="card card-3d h-full flex flex-col justify-between gap-4">
+                      <blockquote className="text-lg leading-relaxed font-medium">
+                        &ldquo;{t.q}&rdquo;
+                      </blockquote>
+                      <div className="flex items-center justify-between text-sm text-slate-500 dark:text-slate-300">
+                        <span className="font-semibold text-slate-900 dark:text-slate-100">
+                          {t.a}
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-brand-blue">
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.021 3.149a1 1 0 0 0 .95.69h3.312c.969 0 1.371 1.24.588 1.81l-2.68 1.948a1 1 0 0 0-.364 1.118l1.022 3.149c.3.921-.755 1.688-1.54 1.118l-2.68-1.947a1 1 0 0 0-1.176 0l-2.68 1.947c-.784.57-1.838-.197-1.539-1.118l1.022-3.149a1 1 0 0 0-.364-1.118L2.08 8.576c-.783-.57-.38-1.81.588-1.81h3.312a1 1 0 0 0 .95-.69l1.02-3.149z" />
+                          </svg>
+                          Trusted patient
+                        </span>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-center gap-2 mt-6">
+              {testimonials.map((_, idx) => (
+                <span
                   key={idx}
-                  className={`transition-all duration-500 ${idx === tIndex ? 'opacity-100 translate-y-0' : 'opacity-0 absolute translate-y-4'}`}
-                >
-                  <blockquote className="text-lg font-medium">{t.q}</blockquote>
-                  <figcaption className="muted">{t.a}</figcaption>
-                </figure>
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    idx === tIndex
+                      ? 'w-6 bg-brand-blue'
+                      : 'w-2 bg-slate-300 dark:bg-slate-600'
+                  }`}
+                />
               ))}
             </div>
           </div>
         </div>
       </section>
-
-      {/* Admin Panel Section */}
-      {isLoggedIn && (
-        <section
-          id="admin-panel"
-          className="py-16 border-t-4 border-brand-blue bg-slate-50 dark:bg-slate-900"
-        >
-          <div className="container-1120">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-3xl font-bold mb-2">Admin Dashboard</h2>
-                <p className="text-slate-600">View and manage form submissions</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setIsAdminPanelOpen(!isAdminPanelOpen)}
-                  className="btn btn-outline"
-                >
-                  {isAdminPanelOpen ? '▼ Collapse' : '▲ Expand'}
-                </button>
-                <button onClick={handleLogout} className="btn btn-outline text-red-600">
-                  Logout
-                </button>
-              </div>
-            </div>
-
-            {isAdminPanelOpen && (
-              <div className="space-y-6">
-                {adminError && (
-                  <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg">
-                    {adminError}
-                  </div>
-                )}
-
-                {/* Export buttons */}
-                <div className="flex gap-3 flex-wrap">
-                  <button
-                    onClick={() => exportData('csv')}
-                    disabled={
-                      exporting ||
-                      (activeTab === 'appointments'
-                        ? appointments.length === 0
-                        : contact.length === 0)
-                    }
-                    className="btn btn-outline disabled:opacity-50"
-                  >
-                    {exporting
-                      ? 'Exporting...'
-                      : `Export ${activeTab === 'appointments' ? 'Appointments' : 'Contact'} CSV`}
-                  </button>
-                  <button
-                    onClick={() => exportData('xlsx')}
-                    disabled={
-                      exporting ||
-                      (activeTab === 'appointments'
-                        ? appointments.length === 0
-                        : contact.length === 0)
-                    }
-                    className="btn btn-outline disabled:opacity-50"
-                  >
-                    {exporting
-                      ? 'Exporting...'
-                      : `Export ${activeTab === 'appointments' ? 'Appointments' : 'Contact'} Excel`}
-                  </button>
-                  <button
-                    onClick={fetchSubmissions}
-                    className="btn btn-outline"
-                    disabled={adminLoading}
-                  >
-                    {adminLoading ? 'Refreshing...' : 'Refresh'}
-                  </button>
-                </div>
-
-                {/* Tabs */}
-                <div className="flex gap-4 border-b border-slate-200">
-                  <button
-                    onClick={() => setActiveTab('appointments')}
-                    className={`px-6 py-3 font-semibold transition-colors ${
-                      activeTab === 'appointments'
-                        ? 'border-b-2 border-brand-blue text-brand-blue'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    Appointments ({appointments.length})
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('contact')}
-                    className={`px-6 py-3 font-semibold transition-colors ${
-                      activeTab === 'contact'
-                        ? 'border-b-2 border-brand-blue text-brand-blue'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    Contact ({contact.length})
-                  </button>
-                </div>
-
-                {/* Submissions List */}
-                {adminLoading ? (
-                  <div className="text-center py-12">
-                    <div className="text-slate-500">Loading submissions...</div>
-                  </div>
-                ) : (activeTab === 'appointments' ? appointments : contact).length === 0 ? (
-                  <div className="text-center py-12">
-                    <div className="text-slate-500 text-lg">No {activeTab} submissions yet.</div>
-                  </div>
-                ) : (
-                  <div className="space-y-4 max-h-[600px] overflow-y-auto">
-                    {(activeTab === 'appointments' ? appointments : contact).map((submission) => (
-                      <div key={submission.id} className="card card-3d">
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <h3 className="font-bold text-xl mb-1">{submission.fullName}</h3>
-                            <p className="text-slate-600">{submission.email}</p>
-                            {submission.phone && (
-                              <p className="text-slate-600">Phone: {submission.phone}</p>
-                            )}
-                          </div>
-                          <button
-                            onClick={() => deleteSubmission(activeTab, submission.id)}
-                            className="text-red-600 hover:text-red-800 font-semibold"
-                          >
-                            Delete
-                          </button>
-                        </div>
-
-                        {submission.preferredDateTime && (
-                          <div className="mb-2">
-                            <strong>Preferred Date & Time:</strong>{' '}
-                            {new Date(submission.preferredDateTime).toLocaleString()}
-                          </div>
-                        )}
-
-                        {submission.department && (
-                          <div className="mb-2">
-                            <strong>Department:</strong> {submission.department}
-                          </div>
-                        )}
-
-                        {submission.message && (
-                          <div className="mb-2">
-                            <strong>Message:</strong>
-                            <p className="mt-1 text-slate-700">{submission.message}</p>
-                          </div>
-                        )}
-
-                        <div className="text-sm text-slate-500 mt-4">
-                          Submitted: {new Date(submission.timestamp).toLocaleString()}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* Admin Login Modal */}
-      {isAdminModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          onClick={() => setIsAdminModalOpen(false)}
-        >
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in" />
-          <div
-            className="relative bg-white rounded-2xl shadow-2xl w-[95vw] md:w-[500px] max-h-[90vh] overflow-y-auto animate-bounce-in-3d z-10"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <AdminLoginModal
-              onClose={() => setIsAdminModalOpen(false)}
-              onLogin={handleAdminLogin}
-            />
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function AdminLoginModal({
-  onClose,
-  onLogin,
-}: {
-  onClose: () => void;
-  onLogin: (username: string, password: string) => Promise<{ success: boolean }>;
-}) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    try {
-      await onLogin(username, password);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Admin Login</h2>
-        <button
-          onClick={onClose}
-          className="text-slate-600 hover:text-slate-900 text-2xl font-bold transition-transform duration-300 hover:scale-125"
-          aria-label="Close modal"
-        >
-          ✕
-        </button>
-      </div>
-
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg mb-4">
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <label className="flex flex-col gap-2">
-          <span className="font-semibold text-slate-900">Username</span>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-            className="form-input-modern"
-            placeholder="Enter username"
-            autoFocus
-          />
-        </label>
-
-        <label className="flex flex-col gap-2">
-          <span className="font-semibold text-slate-900">Password</span>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="form-input-modern"
-            placeholder="Enter password"
-          />
-        </label>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="btn btn-primary btn-3d w-full py-4 text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
-
-      <div className="mt-6 p-4 bg-slate-50 rounded-lg text-sm text-slate-600">
-        <p className="font-semibold mb-2">Default Credentials (Development):</p>
-        <p>
-          Username: <code className="bg-white px-2 py-1 rounded">admin</code>
-        </p>
-        <p>
-          Password: <code className="bg-white px-2 py-1 rounded">admin123</code>
-        </p>
-        <p className="mt-2 text-xs text-red-600">⚠️ Change these in production!</p>
-      </div>
     </div>
   );
 }
@@ -927,7 +561,7 @@ function AppointmentForm({ onClose }: { onClose?: () => void }) {
       <div className="space-y-4">
         <div className="grid md:grid-cols-2 gap-4">
           <label className="flex flex-col gap-2">
-            <span className="font-semibold text-slate-900">Full Name</span>
+            <span className="font-semibold text-slate-900 dark:text-slate-100">Full Name</span>
             <input
               name="fullName"
               required
@@ -936,23 +570,25 @@ function AppointmentForm({ onClose }: { onClose?: () => void }) {
             />
           </label>
           <label className="flex flex-col gap-2">
-            <span className="font-semibold text-slate-900">Email</span>
+            <span className="font-semibold text-slate-900 dark:text-slate-100">Email</span>
             <input
               type="email"
               name="email"
               required
               onChange={handleEmailChange}
-              className={`form-input-modern ${!emailValid ? 'border-red-500 bg-red-50' : ''}`}
+              className={`form-input-modern ${!emailValid ? 'border-red-500 bg-red-50 dark:bg-red-900/40 dark:border-red-400' : ''}`}
               placeholder="you@example.com"
             />
             {!emailValid && (
-              <span className="text-red-600 text-sm font-medium animate-fade-in">{emailError}</span>
+              <span className="text-red-600 dark:text-red-300 text-sm font-medium animate-fade-in">
+                {emailError}
+              </span>
             )}
           </label>
         </div>
         <div className="grid md:grid-cols-2 gap-4">
           <label className="flex flex-col gap-2">
-            <span className="font-semibold text-slate-900">Phone Number</span>
+            <span className="font-semibold text-slate-900 dark:text-slate-100">Phone Number</span>
             <input
               name="phone"
               required
@@ -961,7 +597,9 @@ function AppointmentForm({ onClose }: { onClose?: () => void }) {
             />
           </label>
           <label className="flex flex-col gap-2">
-            <span className="font-semibold text-slate-900">Preferred Date &amp; Time</span>
+            <span className="font-semibold text-slate-900 dark:text-slate-100">
+              Preferred Date &amp; Time
+            </span>
             <input
               type="datetime-local"
               name="preferredDateTime"
@@ -971,27 +609,33 @@ function AppointmentForm({ onClose }: { onClose?: () => void }) {
           </label>
         </div>
         <label className="flex flex-col gap-2">
-          <span className="font-semibold text-slate-900">Department / Service</span>
+          <span className="font-semibold text-slate-900 dark:text-slate-100">
+            Department / Service
+          </span>
           <select name="department" required className="form-input-modern">
             <option value="" disabled selected>
               Select a department
             </option>
             {[
-              'General Medicine',
-              'Dental',
-              'Maternity',
-              'Surgery',
-              'Pediatrics',
-              'Cardiology',
-              'Orthopedics',
+              'General Consultation',
+              'Specialist Clinics',
+              'Outpatient Services',
+              'Minor & Major Surgeries',
+              'Ultrasonography',
+              'Pharmacy',
+              'Inpatient Services',
               'Laboratory',
+              'Maternity Services',
+              'Online Consultation',
             ].map((s) => (
               <option key={s}>{s}</option>
             ))}
           </select>
         </label>
         <label className="flex flex-col gap-2">
-          <span className="font-semibold text-slate-900">Additional Details (optional)</span>
+          <span className="font-semibold text-slate-900 dark:text-slate-100">
+            Additional Details (optional)
+          </span>
           <textarea
             name="message"
             rows={4}
@@ -1008,12 +652,16 @@ function AppointmentForm({ onClose }: { onClose?: () => void }) {
         </button>
         {status !== 'idle' && (
           <div
-            className={`p-4 rounded-lg font-medium animate-fade-in ${status === 'ok' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}
+            className={`p-4 rounded-lg font-medium animate-fade-in ${
+              status === 'ok'
+                ? 'bg-green-50 text-green-800 border border-green-200 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-700'
+                : 'bg-red-50 text-red-800 border border-red-200 dark:bg-red-900/40 dark:text-red-200 dark:border-red-700'
+            }`}
           >
             {msg}
           </div>
         )}
-        <p className="text-slate-600 text-sm text-center">
+        <p className="text-slate-600 dark:text-slate-300 text-sm text-center">
           By submitting, you agree to be contacted by our team.
         </p>
       </div>
