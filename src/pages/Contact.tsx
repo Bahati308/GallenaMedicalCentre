@@ -128,7 +128,7 @@ export default function Contact() {
               <div className="space-y-4">
                 <a
                   href="mailto:gallenamedicalcentre@gmail.com"
-                  className="flex items-center gap-4 p-4 bg-white rounded-xl hover:shadow-md transition-all duration-300 hover:scale-105 group"
+                  className="flex items-center gap-4 p-4 bg-white dark:bg-[#050505] rounded-xl hover:shadow-md transition-all duration-300 hover:scale-105 group dark:border dark:border-slate-700"
                 >
                   <div className="w-12 h-12 bg-brand-blue/10 rounded-lg flex items-center justify-center group-hover:bg-brand-blue/20 transition-colors">
                     <svg
@@ -145,15 +145,17 @@ export default function Contact() {
                     </svg>
                   </div>
                   <div>
-                    <p className="font-semibold text-slate-900">Email</p>
-                    <p className="text-slate-600 text-sm">gallenamedicalcentre@gmail.com</p>
+                    <p className="font-semibold text-slate-900 dark:text-slate-100">Email</p>
+                    <p className="text-slate-600 dark:text-slate-300 text-sm">
+                      gallenamedicalcentre@gmail.com
+                    </p>
                   </div>
                 </a>
                 <a
                   href="https://wa.me/256787992588"
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-4 p-4 bg-white rounded-xl hover:shadow-md transition-all duration-300 hover:scale-105 group"
+                  className="flex items-center gap-4 p-4 bg-white dark:bg-[#050505] rounded-xl hover:shadow-md transition-all duration-300 hover:scale-105 group dark:border dark:border-slate-700"
                 >
                   <div className="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center group-hover:bg-green-500/20 transition-colors">
                     <svg
@@ -167,17 +169,15 @@ export default function Contact() {
                     </svg>
                   </div>
                   <div>
-                    <p className="font-semibold text-slate-900">WhatsApp</p>
-                    <p className="text-slate-600 text-sm">Chat with us</p>
+                    <p className="font-semibold text-slate-900 dark:text-slate-100">WhatsApp</p>
+                    <p className="text-slate-600 dark:text-slate-300 text-sm">Chat with us</p>
                   </div>
                 </a>
                 <a
-                  href="https://facebook.com/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-4 p-4 bg-white rounded-xl hover:shadow-md transition-all duration-300 hover:scale-105 group"
+                  href="tel:+256787992588"
+                  className="flex items-center gap-4 p-4 bg-white dark:bg-[#050505] rounded-xl hover:shadow-md transition-all duration-300 hover:scale-105 group dark:border dark:border-slate-700"
                 >
-                  <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+                  <div className="w-12 h-12 bg-brand-green/10 rounded-lg flex items-center justify-center group-hover:bg-brand-green/20 transition-colors">
                     <svg
                       width="24"
                       height="24"
@@ -185,19 +185,19 @@ export default function Contact() {
                       fill="currentColor"
                       aria-hidden="true"
                     >
-                      <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v1h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z" />
+                      <path d="M6.62 10.79a15.053 15.053 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 .96-.26c1.05.26 2.17.4 3.32.4a1 1 0 0 1 1 1V21a1 1 0 0 1-1 1C11.4 22 2 12.6 2 1a1 1 0 0 1 1-1h4.68a1 1 0 0 1 1 1c0 1.15.14 2.27.4 3.32a1 1 0 0 1-.26.96l-2.2 2.2Z" />
                     </svg>
                   </div>
                   <div>
-                    <p className="font-semibold text-slate-900">Facebook</p>
-                    <p className="text-slate-600 text-sm">Visit our page</p>
+                    <p className="font-semibold text-slate-900 dark:text-slate-100">Call Us</p>
+                    <p className="text-slate-600 dark:text-slate-300 text-sm">+256 787 992 588</p>
                   </div>
                 </a>
               </div>
             </div>
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
-              <p className="font-semibold text-slate-900 mb-2">Address</p>
-              <p className="text-slate-600">
+            <div className="bg-slate-50 dark:bg-[#080808] p-6 rounded-2xl border border-slate-200 dark:border-slate-700">
+              <p className="font-semibold text-slate-900 dark:text-slate-100 mb-2">Address</p>
+              <p className="text-slate-600 dark:text-slate-300">
                 Valley View Estate - Kitagobwa, Buwambo Rd, Wakiso, Uganda
               </p>
             </div>
@@ -228,7 +228,7 @@ export default function Contact() {
 
           {/* Modal Content */}
           <div
-            className="relative bg-white rounded-2xl shadow-2xl w-[95vw] md:w-[60vw] max-h-[90vh] overflow-y-auto animate-bounce-in-3d z-10"
+            className="relative bg-white dark:bg-[#050505] rounded-2xl shadow-2xl w-[95vw] md:w-[60vw] max-h-[90vh] overflow-y-auto animate-bounce-in-3d z-10"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="sticky top-0 bg-gradient-to-r from-brand-blue to-brand-green px-6 py-4 flex items-center justify-between z-20">
@@ -246,7 +246,7 @@ export default function Contact() {
               <form onSubmit={onSubmit} noValidate>
                 <div className="space-y-4">
                   <label className="flex flex-col gap-2">
-                    <span className="font-semibold text-slate-900">Name</span>
+                    <span className="font-semibold text-slate-900 dark:text-slate-100">Name</span>
                     <input
                       name="fullName"
                       required
@@ -255,7 +255,7 @@ export default function Contact() {
                     />
                   </label>
                   <label className="flex flex-col gap-2">
-                    <span className="font-semibold text-slate-900">Email</span>
+                    <span className="font-semibold text-slate-900 dark:text-slate-100">Email</span>
                     <input
                       type="email"
                       name="email"
@@ -271,7 +271,7 @@ export default function Contact() {
                     )}
                   </label>
                   <label className="flex flex-col gap-2">
-                    <span className="font-semibold text-slate-900">Message</span>
+                    <span className="font-semibold text-slate-900 dark:text-slate-100">Message</span>
                     <textarea
                       name="message"
                       rows={6}

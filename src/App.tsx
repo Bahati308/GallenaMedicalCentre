@@ -11,10 +11,15 @@ import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Chatbot from './components/Chatbot';
 import ContactFloat from './components/ContactFloat';
+import Admin from './pages/Admin';
+import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
   return (
-    <div id="app-bg" className="min-h-screen flex flex-col text-slate-900 dark:text-slate-100">
+    <div
+      id="app-bg"
+      className="min-h-screen flex flex-col text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-black"
+    >
       <Helmet>
         <title>Gallena Medical Centre</title>
         <meta
@@ -38,6 +43,14 @@ export default function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </main>
       <Footer />

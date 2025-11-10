@@ -51,24 +51,24 @@ export default function Login() {
   }
 
   return (
-    <section className="py-16 min-h-screen flex items-center justify-center">
+    <section className="py-16 min-h-screen flex items-center justify-center bg-transparent dark:bg-black">
       <Helmet>
         <title>Admin Login | Gallena Medical Centre</title>
       </Helmet>
       <div className="container-1120 max-w-md">
         <div className="card card-3d">
           <h1 className="text-3xl font-bold mb-2 text-center">Admin Login</h1>
-          <p className="text-slate-600 text-center mb-6">Access the admin panel</p>
+          <p className="text-slate-600 dark:text-slate-300 text-center mb-6">Access the admin panel</p>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg mb-4">
+            <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg mb-4 dark:bg-red-900/40 dark:border-red-700 dark:text-red-200">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <label className="flex flex-col gap-2">
-              <span className="font-semibold text-slate-900">Username</span>
+              <span className="font-semibold text-slate-900 dark:text-slate-100">Username</span>
               <input
                 type="text"
                 value={username}
@@ -81,7 +81,7 @@ export default function Login() {
             </label>
 
             <label className="flex flex-col gap-2">
-              <span className="font-semibold text-slate-900">Password</span>
+              <span className="font-semibold text-slate-900 dark:text-slate-100">Password</span>
               <input
                 type="password"
                 value={password}
@@ -101,15 +101,23 @@ export default function Login() {
             </button>
           </form>
 
-          <div className="mt-6 p-4 bg-slate-50 rounded-lg text-sm text-slate-600">
-            <p className="font-semibold mb-2">Default Credentials (Development):</p>
-            <p>
-              Username: <code className="bg-white px-2 py-1 rounded">admin</code>
+          <div className="mt-6 p-4 bg-slate-50 dark:bg-[#080808] rounded-lg text-sm text-slate-600 dark:text-slate-300">
+            <p className="font-semibold mb-2 text-slate-900 dark:text-slate-100">
+              Default Credentials (Development):
             </p>
             <p>
-              Password: <code className="bg-white px-2 py-1 rounded">admin123</code>
+              Username:{' '}
+              <code className="bg-white dark:bg-[#111111] px-2 py-1 rounded text-slate-900 dark:text-slate-100">
+                admin
+              </code>
             </p>
-            <p className="mt-2 text-xs text-red-600">⚠️ Change these in production!</p>
+            <p>
+              Password:{' '}
+              <code className="bg-white dark:bg-[#111111] px-2 py-1 rounded text-slate-900 dark:text-slate-100">
+                admin123
+              </code>
+            </p>
+            <p className="mt-2 text-xs text-red-600 dark:text-red-400">⚠️ Change these in production!</p>
           </div>
         </div>
       </div>

@@ -4,33 +4,44 @@ import { useEffect, useRef } from 'react';
 export default function Services() {
   const services = [
     {
-      t: 'General Medicine',
-      d: 'Primary care, chronic disease management, annual physicals, preventive screening.',
+      t: 'General Consultation',
+      d: 'Thorough primary-care visits with personalised treatment plans and preventive screenings.',
     },
     {
-      t: 'Dental',
-      d: 'Exams, cleaning, fillings, root canals, crowns, cosmetic procedures, oral surgery.',
+      t: 'Specialist Clinics',
+      d: 'Focused reviews across cardiology, pediatrics, orthopedics, ENT, dermatology, and more.',
     },
     {
-      t: 'Maternity',
-      d: 'Antenatal classes, delivery, postnatal care; lactation support and mother-baby safety.',
-    },
-    { t: 'Surgery', d: 'General and minimally invasive procedures; pre-op to recovery support.' },
-    {
-      t: 'Pediatrics',
-      d: 'Well-child visits, immunizations, acute and chronic condition management.',
+      t: 'Outpatient Services',
+      d: 'Same-day diagnostics, wound care, infusions, and follow-up visits without admission.',
     },
     {
-      t: 'Cardiology',
-      d: 'ECG, echocardiogram, risk assessment, medication management, ongoing follow-up.',
+      t: 'Minor & Major Surgeries',
+      d: 'Elective and emergency procedures in fully equipped theatres with attentive recovery care.',
     },
     {
-      t: 'Orthopedics',
-      d: 'Fracture care, sports injuries, arthritis, joint replacement referrals, rehab.',
+      t: 'Ultrasonography',
+      d: 'High-resolution imaging for obstetric, abdominal, thyroid, vascular, and musculoskeletal needs.',
     },
     {
-      t: 'Laboratory & Imaging',
-      d: 'Blood tests, cultures, X-ray, ultrasound; accurate results supporting quick decisions.',
+      t: 'Pharmacy',
+      d: 'Hospital-grade dispensary, medication counselling, and chronic therapy support on site.',
+    },
+    {
+      t: 'Inpatient Services',
+      d: 'Comfortable wards with 24/7 nursing, multidisciplinary rounds, and personalised rehab plans.',
+    },
+    {
+      t: 'Laboratory',
+      d: 'Accredited diagnostics spanning hematology, chemistry, microbiology, and rapid point-of-care tests.',
+    },
+    {
+      t: 'Maternity Services',
+      d: 'Antenatal classes, delivery suites, postnatal recovery, newborn screenings, and lactation support.',
+    },
+    {
+      t: 'Online Consultation',
+      d: 'Secure virtual visits for follow-ups, prescription renewals, and health coaching wherever you are.',
     },
   ];
 

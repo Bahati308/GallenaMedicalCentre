@@ -8,22 +8,25 @@ export default function Footer() {
         <div>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 no-underline text-slate-900 font-semibold"
+            className="inline-flex items-center gap-3 no-underline text-white text-xl md:text-2xl italic font-heading"
           >
             <img src="/logo.svg" alt="Gallena Medical Centre Logo" className="w-10 h-10" />
-            <span>Gallena Medical Centre</span>
+            <span className="flex flex-col md:flex-row md:items-center md:gap-2">
+              Gallena Medical Centre
+              <span className="hidden md:inline text-lg md:text-xl font-semibold not-italic text-white">
+                — We Care to Heal !
+              </span>
+            </span>
           </Link>
-          <p className="text-black italic text-2xl">We Care to Heal !</p>
+          <p className="md:hidden text-white italic text-lg font-bold mt-2">We Care to Heal !</p>
         </div>
         <div>
           <ul className="list-none m-0 p-0 flex gap-3">
             <li>
               <a
-                aria-label="Facebook"
-                href="https://facebook.com/"
-                target="_blank"
-                rel="noreferrer"
-                className="grid place-items-center w-10 h-10 rounded-xl bg-[#eef8f8] text-black no-underline border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] dark:bg-slate-900 pop-on-scroll visible transition-all duration-300 hover:scale-110 hover:shadow-xl hover:bg-blue-50 active:scale-95"
+                aria-label="Call Gallena Medical Centre"
+                href="tel:+256787992588"
+                className="grid place-items-center w-10 h-10 rounded-xl bg-[#0b3b4f] text-white no-underline pop-on-scroll visible shadow-[0_8px_20px_rgba(14,165,233,.35)] transition-all duration-300 hover:scale-110 hover:shadow-[0_12px_26px_rgba(14,165,233,.4)]"
               >
                 <svg
                   width="20"
@@ -32,7 +35,7 @@ export default function Footer() {
                   fill="currentColor"
                   aria-hidden="true"
                 >
-                  <path d="M22 12.06C22 6.49 17.52 2 12 2S2 6.49 2 12.06c0 5.01 3.66 9.17 8.44 9.94v-7.03H7.9v-2.91h2.54V9.41c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.45h-1.26c-1.24 0-1.62.77-1.62 1.56v1.87h2.76l-.44 2.91h-2.32V22c4.78-.77 8.44-4.93 8.44-9.94z" />
+                  <path d="M6.62 10.79a15.053 15.053 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 .96-.26c1.05.26 2.17.4 3.32.4a1 1 0 0 1 1 1V21a1 1 0 0 1-1 1C11.4 22 2 12.6 2 1a1 1 0 0 1 1-1h4.68a1 1 0 0 1 1 1c0 1.15.14 2.27.4 3.32a1 1 0 0 1-.26.96l-2.2 2.2Z" />
                 </svg>
               </a>
             </li>
@@ -42,7 +45,7 @@ export default function Footer() {
                 href="https://wa.me/256787992588"
                 target="_blank"
                 rel="noreferrer"
-                className="grid place-items-center w-10 h-10 rounded-xl bg-[#eef8f8] text-black no-underline pop-on-scroll visible border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] dark:bg-slate-900 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:bg-emerald-50 active:scale-95"
+                className="grid place-items-center w-10 h-10 rounded-xl bg-[#0b3b4f] text-white no-underline pop-on-scroll visible shadow-[0_8px_20px_rgba(16,185,129,.35)] transition-all duration-300 hover:scale-110 hover:shadow-[0_12px_26px_rgba(16,185,129,.4)]"
               >
                 <svg
                   width="20"
@@ -59,7 +62,7 @@ export default function Footer() {
               <a
                 aria-label="Email"
                 href="mailto:gallenamedicalcentre@gmail.com"
-                className="grid place-items-center w-10 h-10 rounded-xl bg-[#eef8f8] text-black no-underline pop-on-scroll visible border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] dark:bg-slate-900 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:bg-blue-50 active:scale-95"
+                className="grid place-items-center w-10 h-10 rounded-xl bg-[#0b3b4f] text-white no-underline pop-on-scroll visible shadow-[0_8px_20px_rgba(14,165,233,.35)] transition-all duration-300 hover:scale-110 hover:shadow-[0_12px_26px_rgba(14,165,233,.4)]"
               >
                 <svg
                   width="20"
