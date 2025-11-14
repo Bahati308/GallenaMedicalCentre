@@ -97,7 +97,7 @@ export default function Home() {
             <h1 className="text-4xl font-semibold reveal-up opacity-0 translate-y-3 transition">
               We Care to Heal
             </h1>
-            <p className="muted reveal-up opacity-0 translate-y-3 transition">
+            <p className="muted">
               At Gallena Medical Centre, we deliver trusted, patient-centered healthcare across
               general medicine, dental, maternity, surgery, and more.
             </p>
@@ -264,7 +264,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      
+
       {/* Appointment Modal */}
       {isModalOpen && (
         <div
@@ -450,9 +450,7 @@ export default function Home() {
                 <span
                   key={idx}
                   className={`h-2 rounded-full transition-all duration-300 ${
-                    idx === tIndex
-                      ? 'w-6 bg-brand-blue'
-                      : 'w-2 bg-slate-300 dark:bg-slate-600'
+                    idx === tIndex ? 'w-6 bg-brand-blue' : 'w-2 bg-slate-300 dark:bg-slate-600'
                   }`}
                 />
               ))}

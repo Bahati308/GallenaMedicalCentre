@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useState, FormEvent } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { buildApiUrl } from '../utils/api';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -18,7 +19,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(buildApiUrl('/api/auth/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +59,9 @@ export default function Login() {
       <div className="container-1120 max-w-md">
         <div className="card card-3d">
           <h1 className="text-3xl font-bold mb-2 text-center">Admin Login</h1>
-          <p className="text-slate-600 dark:text-slate-300 text-center mb-6">Access the admin panel</p>
+          <p className="text-slate-600 dark:text-slate-300 text-center mb-6">
+            Access the admin panel
+          </p>
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg mb-4 dark:bg-red-900/40 dark:border-red-700 dark:text-red-200">
@@ -117,7 +120,9 @@ export default function Login() {
                 admin123
               </code>
             </p>
-            <p className="mt-2 text-xs text-red-600 dark:text-red-400">⚠️ Change these in production!</p>
+            <p className="mt-2 text-xs text-red-600 dark:text-red-400">
+              ⚠️ Change these in production!
+            </p>
           </div>
         </div>
       </div>

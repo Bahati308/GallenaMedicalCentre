@@ -10,19 +10,10 @@ The forms are **configured to use Custom API Endpoints** (Option 1). You need to
 
 ### Step 1: Create Environment Variables
 
-**Option A: Copy the example file (Recommended)**
-
-```bash
-cp .env.example .env
-```
-
-Then edit `.env` and update with your actual API endpoints.
-
-**Option B: Create manually**
-
 Create a `.env` file in the root directory:
 
 ```env
+VITE_API_ROOT=https://your-api.com
 VITE_API_ENDPOINT=https://your-api.com/api/appointments
 VITE_CONTACT_API_ENDPOINT=https://your-api.com/api/contact
 ```
@@ -31,15 +22,17 @@ VITE_CONTACT_API_ENDPOINT=https://your-api.com/api/contact
 
 ```env
 # Local development
+VITE_API_ROOT=http://localhost:3000
 VITE_API_ENDPOINT=http://localhost:3000/api/appointments
 VITE_CONTACT_API_ENDPOINT=http://localhost:3000/api/contact
 
 # Production
+VITE_API_ROOT=https://api.gallenamedicalcentre.com
 VITE_API_ENDPOINT=https://api.gallenamedicalcentre.com/appointments
 VITE_CONTACT_API_ENDPOINT=https://api.gallenamedicalcentre.com/contact
 ```
 
-> **Note:** A `.env.example` file is included in the repository as a template. Copy it to `.env` and fill in your values.
+> **Tip:** Keep a `.env.example` file updated in your repo so collaborators know which variables are required.
 
 ### Step 2: Verify Code Configuration
 
@@ -117,6 +110,7 @@ await submitViaNetlify('appointment-form', formData);
 
 ```env
 # API Endpoints (Required - Currently Active)
+VITE_API_ROOT=https://your-api.com
 VITE_API_ENDPOINT=https://your-api.com/api/appointments
 VITE_CONTACT_API_ENDPOINT=https://your-api.com/api/contact
 ```

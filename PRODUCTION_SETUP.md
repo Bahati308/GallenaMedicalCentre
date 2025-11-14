@@ -155,6 +155,7 @@ Create a `.env` file with:
 ```env
 # Server
 PORT=3000
+VITE_API_ROOT=https://api.gallenamedicalcentre.com
 
 # Database
 MONGODB_URI=mongodb://localhost:27017
