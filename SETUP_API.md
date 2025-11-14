@@ -6,6 +6,7 @@
 
 - Appointment Form → `/api/appointments`
 - Contact Form → `/api/contact`
+- Auth/Login → `/api/auth/login`
 
 ## To Configure Your API Endpoints:
 
@@ -19,10 +20,12 @@ cp .env.example .env
 
 ```env
 # For example, if your API is at:
+VITE_API_ROOT=https://api.gallenamedicalcentre.com
 VITE_API_ENDPOINT=https://api.gallenamedicalcentre.com/appointments
 VITE_CONTACT_API_ENDPOINT=https://api.gallenamedicalcentre.com/contact
 
 # Or for local development:
+# VITE_API_ROOT=http://localhost:3000
 # VITE_API_ENDPOINT=http://localhost:3000/api/appointments
 # VITE_CONTACT_API_ENDPOINT=http://localhost:3000/api/contact
 ```

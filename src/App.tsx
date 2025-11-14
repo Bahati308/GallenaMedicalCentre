@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { Grid, Column } from '@carbon/react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollBg from './components/ScrollBg';
@@ -18,7 +19,7 @@ export default function App() {
   return (
     <div
       id="app-bg"
-      className="min-h-screen flex flex-col text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-black"
+      className="min-h-screen flex flex-col text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-black cds--layer"
     >
       <Helmet>
         <title>Gallena Medical Centre</title>
@@ -35,23 +36,27 @@ export default function App() {
       </Helmet>
       <ScrollBg />
       <Header />
-      <main className="flex-1">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/staff" element={<Staff />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <Admin />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+      <main className="flex-1 w-full py-6">
+        <Grid fullWidth className="w-full px-4 lg:px-6">
+          <Column lg={16} md={8} sm={4}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/staff" element={<Staff />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute>
+                    <Admin />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </Column>
+        </Grid>
       </main>
       <Footer />
       <Chatbot />

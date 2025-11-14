@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { buildApiUrl } from '../utils/api';
 
 interface Submission {
   id: string;
@@ -33,7 +34,7 @@ export default function Admin() {
   const fetchSubmissions = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/submissions', {
+      const response = await fetch(buildApiUrl('/api/submissions'), {
         headers: getAuthHeaders(),
       });
 
@@ -85,7 +86,7 @@ export default function Admin() {
     if (!confirm('Are you sure you want to delete this submission?')) return;
 
     try {
-      const response = await fetch(`/api/submissions/${type}/${id}`, {
+      const response = await fetch(buildApiUrl(`/api/submissions/${type}/${id}`), {
         method: 'DELETE',
         headers: getAuthHeaders(),
       });
@@ -114,7 +115,7 @@ export default function Admin() {
     try {
       setExporting(true);
       const type = typeOverride || (activeTab === 'appointments' ? 'appointments' : 'contact');
-      const response = await fetch(`/api/submissions/export/${format}?type=${type}`, {
+      const response = await fetch(buildApiUrl(`/api/submissions/export/${format}?type=${type}`), {
         headers: getAuthHeaders(),
       });
 
@@ -188,7 +189,7 @@ export default function Admin() {
           <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg mb-6">
             {error}
             <br />
-            <small>Make sure the backend server is running on port 3000</small>
+            <small>Verify the backend configured via VITE_API_ROOT is reachable</small>
           </div>
         )}
 

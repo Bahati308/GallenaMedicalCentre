@@ -16,7 +16,7 @@ export default function Header() {
       id="site-header"
       className={`sticky top-0 z-40 bg-transparent backdrop-blur border-b border-slate-200 dark:border-slate-700 transition-all duration-300 ${elevated ? 'shadow-lg shadow-brand-blue/10' : ''}`}
     >
-      <div className="container-1120 flex items-center justify-between py-3">
+      <div className="container-1120 flex items-center justify-between py-3 gap-3">
         <Link
           to="/"
           className="inline-flex items-center gap-2 no-underline text-white font-semibold group transition-transform duration-300 hover:scale-105"
@@ -30,7 +30,7 @@ export default function Header() {
             Gallena Medical Centre
           </span>
         </Link>
-        <nav className="relative" aria-label="Primary">
+        <nav className="relative flex-1 flex justify-end" aria-label="Primary">
           <button
             aria-expanded={open}
             aria-controls="nav-menu"
@@ -41,12 +41,12 @@ export default function Header() {
           </button>
           <ul
             id="nav-menu"
-            className={`md:flex gap-5 list-none m-0 p-0 absolute md:static right-0 top-12 bg-brand-green md:bg-transparent border md:border-0 border-white/20 rounded-xl md:rounded-none px-3 py-2 md:p-0 transition-all duration-300 ${open ? 'flex flex-col animate-scale-in' : 'hidden md:flex'}`}
+            className={`md:flex gap-3 lg:gap-5 list-none m-0 p-0 absolute md:static right-0 top-12 bg-brand-green md:bg-transparent border md:border-0 border-white/20 rounded-xl md:rounded-none px-4 py-3 md:p-0 min-w-[220px] transition-all duration-300 ${open ? 'flex flex-col animate-scale-in' : 'hidden md:flex'}`}
           >
             <li>
               <NavLink
                 to="/services"
-                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-all duration-300 hover:scale-[1.1] font-heading border border-transparent hover:border-[#4f8dff]/80"
+                className="px-2 py-2 rounded-lg text-white font-semibold text-lg md:text-xl transition-all duration-300 hover:scale-[1.05] font-heading border border-transparent hover:border-white/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 Services
               </NavLink>

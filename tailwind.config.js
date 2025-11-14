@@ -18,13 +18,7 @@ export default {
         xl: '14px',
       },
       fontFamily: {
-        sans: [
-          '"IBM Plex Sans"',
-          '"Helvetica Neue"',
-          'Helvetica',
-          'Arial',
-          'sans-serif',
-        ],
+        sans: ['"IBM Plex Sans"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
         heading: [
           '"IBM Plex Sans Condensed"',
           '"IBM Plex Sans"',

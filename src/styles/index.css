@@ -28,7 +28,8 @@
   h4,
   h5,
   h6 {
-    font-family: 'IBM Plex Sans Condensed', 'IBM Plex Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family:
+      'IBM Plex Sans Condensed', 'IBM Plex Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: 600;
     letter-spacing: 0.01em;
   }
@@ -55,43 +56,43 @@
     line-height: 1.3;
   }
   .btn-primary {
-    color: #0f172a;
-    background-color: #bae6ff;
-    box-shadow: 0 1px 3px rgba(59, 130, 246, 0.25);
+    color: #f8fafc;
+    background: linear-gradient(135deg, #0f62fe, #1d7bff);
+    box-shadow: 0 8px 20px rgba(15, 98, 254, 0.35);
   }
   .btn-primary:hover {
-    background-color: #90cdfc;
-    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
+    background: linear-gradient(135deg, #1a71ff, #2d89ff);
+    box-shadow: 0 12px 30px rgba(15, 98, 254, 0.45);
     transform: translateY(-1px);
   }
   .btn-primary:active {
-    background-color: #60a5fa;
+    background: linear-gradient(135deg, #0f5ae6, #1d7bff);
     transform: translateY(0);
-    box-shadow: none;
+    box-shadow: 0 6px 16px rgba(15, 90, 230, 0.3);
   }
   .btn-primary:focus-visible {
-    outline: 2px solid #0f62fe;
+    outline: 2px solid #a6c8ff;
     outline-offset: 2px;
   }
   .btn-outline {
-    color: #60a5fa;
-    border-color: rgba(96, 165, 250, 0.8);
+    color: #0f62fe;
+    border-color: rgba(15, 98, 254, 0.9);
     background-color: transparent;
   }
   .btn-outline:hover {
-    color: #3b82f6;
-    border-color: rgba(59, 130, 246, 0.9);
-    background-color: rgba(190, 230, 255, 0.35);
+    color: #ffffff;
+    border-color: rgba(15, 98, 254, 1);
+    background-color: rgba(15, 98, 254, 0.25);
     transform: translateY(-1px);
   }
   .btn-outline:active {
-    color: #2563eb;
-    border-color: rgba(37, 99, 235, 0.9);
-    background-color: rgba(125, 211, 252, 0.35);
+    color: #ffffff;
+    border-color: rgba(15, 98, 254, 1);
+    background-color: rgba(15, 98, 254, 0.45);
     transform: translateY(0);
   }
   .btn-outline:focus-visible {
-    outline: 2px solid #0f62fe;
+    outline: 2px solid #a6c8ff;
     outline-offset: 2px;
   }
   .card {
@@ -102,12 +103,16 @@
     transform-origin: center;
   }
 
-.card::after {
+  .card::after {
     content: '';
     position: absolute;
     inset: -40%;
     pointer-events: none;
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 60%);
+    background: radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.55),
+      rgba(255, 255, 255, 0) 60%
+    );
     opacity: 0;
     transform: scale(0.5);
     transition:
@@ -115,9 +120,13 @@
       transform 0.45s ease;
   }
 
-.dark .card::after {
-    background: radial-gradient(circle at center, rgba(226, 232, 240, 0.35), rgba(15, 23, 42, 0) 65%);
-   }
+  .dark .card::after {
+    background: radial-gradient(
+      circle at center,
+      rgba(226, 232, 240, 0.35),
+      rgba(15, 23, 42, 0) 65%
+    );
+  }
   .card:hover {
     transform: translateY(-6px) scale(1.06);
     box-shadow:
@@ -131,6 +140,11 @@
   }
   .muted {
     @apply text-slate-500 dark:text-slate-400;
+  }
+  .muted.reveal-up {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 }
 
@@ -152,18 +166,23 @@
 .muted {
   color: var(--muted-color, #64748b) !important;
 }
+.muted.reveal-up {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
 /* Navbar background green and sticky */
 #site-header {
-  background-color: #10b981 !important;
+  background-color: #008c4a !important;
   color: #fff !important;
   transition: background-color 0.4s ease;
 }
 .dark #site-header {
-  background-color: #10b981 !important;
+  background-color: #008c4a !important;
   color: #ffffff !important;
 }
 .site-footer {
-  background-color: #10b981 !important;
+  background-color: #008c4a !important;
   color: #fff !important;
   min-height: 56px;
   padding-top: 12px;
@@ -175,8 +194,13 @@
 .site-footer a {
   color: #fff !important;
 }
+.site-footer--slim {
+  min-height: 40px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
 .subfooter {
-  background-color: #10b981 !important;
+  background-color: #008c4a !important;
   color: #fff !important;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   padding: 0 0 8px 0;

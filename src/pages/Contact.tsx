@@ -271,7 +271,9 @@ export default function Contact() {
                     )}
                   </label>
                   <label className="flex flex-col gap-2">
-                    <span className="font-semibold text-slate-900 dark:text-slate-100">Message</span>
+                    <span className="font-semibold text-slate-900 dark:text-slate-100">
+                      Message
+                    </span>
                     <textarea
                       name="message"
                       rows={6}
