@@ -34,17 +34,13 @@ export default function Admin() {
   const fetchSubmissions = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(buildApiUrl('/api/submissions'), {
-        headers: getAuthHeaders(),
-      });
-
-      if (response.status === 401) {
-        // Token expired or invalid
-        localStorage.removeItem('admin_token');
-        localStorage.removeItem('admin_user');
-        navigate('/login');
-        return;
+      const adminDataUrl = import.meta.env.VITE_ADMIN_DATA_URL as string | undefined;
+      if (!adminDataUrl) {
+        throw new Error('Admin data URL not configured. Set VITE_ADMIN_DATA_URL.');
       }
+      const response = await fetch(adminDataUrl);
+
+      // No auth expected for Google Apps Script doGet; skip 401 handling
 
       if (!response.ok) {
         // Try to get error message
@@ -60,12 +56,13 @@ export default function Admin() {
 
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('Server returned non-JSON response. Is the backend running?');
+        throw new Error('Server returned non-JSON response from admin data URL');
       }
 
       const data = await response.json();
       setAppointments(data.appointments || []);
-      setContact(data.contact || []);
+      // Apps Script returns "contacts" array
+      setContact(data.contacts || data.contact || []);
       setError('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load submissions');
@@ -189,7 +186,7 @@ export default function Admin() {
           <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg mb-6">
             {error}
             <br />
-            <small>Verify the backend configured via VITE_API_ROOT is reachable</small>
+            <small>Verify VITE_ADMIN_DATA_URL is set and reachable</small>
           </div>
         )}
 
