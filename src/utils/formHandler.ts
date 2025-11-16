@@ -33,8 +33,17 @@ export async function submitAppointmentForm(
     const response = await fetch(url, {
       method: 'POST',
       headers: isGas ? undefined : { 'Content-Type': 'application/json' },
+      // With GAS, many deployments don't include CORS headers.
+      // Use 'no-cors' so the request succeeds; result will be 'opaque'.
+      mode: isGas ? 'no-cors' : 'cors',
       body: JSON.stringify(data),
     });
+
+    // If using GAS, we can't read the response due to opaque CORS.
+    // Treat a network-level success as success for UX since the sheet updates.
+    if (isGas) {
+      return { success: true, message: 'Submitted successfully.' };
+    }
 
     if (!response.ok) {
       // Try to get error message from response
@@ -98,8 +107,13 @@ export async function submitContactForm(
     const response = await fetch(url, {
       method: 'POST',
       headers: isGas ? undefined : { 'Content-Type': 'application/json' },
+      mode: isGas ? 'no-cors' : 'cors',
       body: JSON.stringify(data),
     });
+
+    if (isGas) {
+      return { success: true, message: 'Submitted successfully.' };
+    }
 
     if (!response.ok) {
       // Try to get error message from response
