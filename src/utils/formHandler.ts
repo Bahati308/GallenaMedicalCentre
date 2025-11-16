@@ -28,11 +28,11 @@ export async function submitAppointmentForm(
 
   try {
     const url = GAS_URL || API_ENDPOINT;
+    // To avoid CORS preflight with Google Apps Script, omit JSON Content-Type when using GAS
+    const isGas = Boolean(GAS_URL);
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: isGas ? undefined : { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
 
@@ -93,11 +93,11 @@ export async function submitContactForm(
 
   try {
     const url = GAS_URL || API_ENDPOINT;
+    // To avoid CORS preflight with Google Apps Script, omit JSON Content-Type when using GAS
+    const isGas = Boolean(GAS_URL);
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: isGas ? undefined : { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
 
