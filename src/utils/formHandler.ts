@@ -22,12 +22,13 @@ export interface ContactFormData {
 export async function submitAppointmentForm(
   data: AppointmentFormData
 ): Promise<{ success: boolean; message?: string }> {
-  // Option 1: API Endpoint (Recommended)
-  // Replace with your actual API endpoint
+  // Prefer Google Apps Script Web App URL if provided, else fall back to API endpoint
+  const GAS_URL = import.meta.env.VITE_GAS_APPOINTMENTS_URL as string | undefined;
   const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || '/api/appointments';
 
   try {
-    const response = await fetch(API_ENDPOINT, {
+    const url = GAS_URL || API_ENDPOINT;
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -45,11 +46,11 @@ export async function submitAppointmentForm(
         // If response isn't JSON, use status-based message
         if (response.status === 404) {
           errorMessage =
-            `API endpoint not found (404). The endpoint "${API_ENDPOINT}" does not exist.\n\n` +
+            `Endpoint not found (404). The endpoint "${url}" does not exist.\n\n` +
             `To fix this:\n` +
-            `1. Set up your backend API at this endpoint, OR\n` +
-            `2. Create a .env file with: VITE_API_ENDPOINT=your-actual-api-url\n` +
-            `3. See FORM_HANDLING.md for more options`;
+            `1. If using Google Apps Script, ensure the Web App is deployed and the URL is correct (VITE_GAS_APPOINTMENTS_URL)\n` +
+            `2. Otherwise set up your backend API or set VITE_API_ENDPOINT\n` +
+            `3. See FORM_HANDLING.md for Google Sheets + Apps Script setup`;
         } else if (response.status === 500) {
           errorMessage = 'Server error (500). Please try again later or contact support.';
         }
@@ -64,12 +65,13 @@ export async function submitAppointmentForm(
     // If it's a network error (not an HTTP error), provide helpful message
     if (error instanceof TypeError && error.message.includes('fetch')) {
       throw new Error(
-        `Cannot connect to API endpoint "${API_ENDPOINT}".\n\n` +
+        `Cannot reach endpoint.\n` +
+          `Tried: ${GAS_URL ? `Google Apps Script (${GAS_URL})` : API_ENDPOINT}\n\n` +
           `This usually means:\n` +
-          `- The backend server is not running\n` +
-          `- The endpoint URL is incorrect\n` +
-          `- Check your .env file configuration\n\n` +
-          `See FORM_HANDLING.md for setup instructions.`
+          `- The Apps Script Web App is not deployed with "Anyone" access\n` +
+          `- CORS not configured in Apps Script response\n` +
+          `- The endpoint URL is incorrect\n\n` +
+          `See FORM_HANDLING.md for Google Sheets + Apps Script setup.`
       );
     }
     throw error;
@@ -82,10 +84,12 @@ export async function submitAppointmentForm(
 export async function submitContactForm(
   data: ContactFormData
 ): Promise<{ success: boolean; message?: string }> {
+  const GAS_URL = import.meta.env.VITE_GAS_CONTACT_URL as string | undefined;
   const API_ENDPOINT = import.meta.env.VITE_CONTACT_API_ENDPOINT || '/api/contact';
 
   try {
-    const response = await fetch(API_ENDPOINT, {
+    const url = GAS_URL || API_ENDPOINT;
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -103,11 +107,11 @@ export async function submitContactForm(
         // If response isn't JSON, use status-based message
         if (response.status === 404) {
           errorMessage =
-            `API endpoint not found (404). The endpoint "${API_ENDPOINT}" does not exist.\n\n` +
+            `Endpoint not found (404). The endpoint "${url}" does not exist.\n\n` +
             `To fix this:\n` +
-            `1. Set up your backend API at this endpoint, OR\n` +
-            `2. Create a .env file with: VITE_CONTACT_API_ENDPOINT=your-actual-api-url\n` +
-            `3. See FORM_HANDLING.md for more options`;
+            `1. If using Google Apps Script, ensure the Web App is deployed and the URL is correct (VITE_GAS_CONTACT_URL)\n` +
+            `2. Otherwise set up your backend API or set VITE_CONTACT_API_ENDPOINT\n` +
+            `3. See FORM_HANDLING.md for Google Sheets + Apps Script setup`;
         } else if (response.status === 500) {
           errorMessage = 'Server error (500). Please try again later or contact support.';
         }
@@ -122,12 +126,13 @@ export async function submitContactForm(
     // If it's a network error (not an HTTP error), provide helpful message
     if (error instanceof TypeError && error.message.includes('fetch')) {
       throw new Error(
-        `Cannot connect to API endpoint "${API_ENDPOINT}".\n\n` +
+        `Cannot reach endpoint.\n` +
+          `Tried: ${GAS_URL ? `Google Apps Script (${GAS_URL})` : API_ENDPOINT}\n\n` +
           `This usually means:\n` +
-          `- The backend server is not running\n` +
-          `- The endpoint URL is incorrect\n` +
-          `- Check your .env file configuration\n\n` +
-          `See FORM_HANDLING.md for setup instructions.`
+          `- The Apps Script Web App is not deployed with "Anyone" access\n` +
+          `- CORS not configured in Apps Script response\n` +
+          `- The endpoint URL is incorrect\n\n` +
+          `See FORM_HANDLING.md for Google Sheets + Apps Script setup.`
       );
     }
     throw error;
