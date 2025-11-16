@@ -59,7 +59,11 @@ export async function submitAppointmentForm(
     }
 
     const result = await response.json();
-    return { success: true, message: result.message };
+    // Some Apps Script deployments return text/html; be tolerant
+    if (result && typeof result === 'object') {
+      return { success: true, message: result.message || 'Submitted successfully.' };
+    }
+    return { success: true, message: 'Submitted successfully.' };
   } catch (error) {
     console.error('Error submitting appointment:', error);
     // If it's a network error (not an HTTP error), provide helpful message
@@ -120,7 +124,11 @@ export async function submitContactForm(
     }
 
     const result = await response.json();
-    return { success: true, message: result.message };
+    // Some Apps Script deployments return text/html; be tolerant
+    if (result && typeof result === 'object') {
+      return { success: true, message: result.message || 'Submitted successfully.' };
+    }
+    return { success: true, message: 'Submitted successfully.' };
   } catch (error) {
     console.error('Error submitting contact form:', error);
     // If it's a network error (not an HTTP error), provide helpful message
