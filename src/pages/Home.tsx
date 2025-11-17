@@ -152,14 +152,59 @@ export default function Home() {
               {
                 t: 'Modern Facilities',
                 d: 'State-of-the-art diagnostics and surgical suites for better, faster care.',
+                icon: (
+                  <svg
+                    className="w-16 h-16 text-brand-blue"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                    />
+                  </svg>
+                ),
               },
               {
                 t: 'Expert Team',
                 d: 'Board-certified doctors, experienced nurses, and caring support staff.',
+                icon: (
+                  <svg
+                    className="w-16 h-16 text-brand-blue"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
+                ),
               },
               {
                 t: 'Patient First',
                 d: 'Personalized treatment plans and transparent communication at every step.',
+                icon: (
+                  <svg
+                    className="w-16 h-16 text-brand-blue"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                ),
               },
             ].map((i, idx) => (
               <div
@@ -167,8 +212,11 @@ export default function Home() {
                 className={`card card-3d reveal-up opacity-0 translate-y-3 transition delay-[${idx * 0.1}s]`}
                 style={{ transitionDelay: `${idx * 0.1}s` }}
               >
-                <h3 className="font-semibold text-lg">{i.t}</h3>
-                <p>{i.d}</p>
+                <div className="flex items-center justify-center mb-4 p-4 bg-gradient-to-br from-brand-blue/10 to-brand-green/10 rounded-xl">
+                  {i.icon}
+                </div>
+                <h3 className="font-semibold text-lg mb-2">{i.t}</h3>
+                <p className="muted">{i.d}</p>
               </div>
             ))}
           </div>
@@ -447,59 +495,17 @@ export default function Home() {
               {
                 t: '5 Habits for a Healthier Heart',
                 d: 'Small lifestyle changes that make a big difference.',
-                icon: (
-                  <svg
-                    className="w-16 h-16 text-brand-blue"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
-                  </svg>
-                ),
+                img: '/hydration-heart-health.jpg',
               },
               {
                 t: 'What to Expect in Prenatal Care',
                 d: 'Your guide to a safe and informed pregnancy journey.',
-                icon: (
-                  <svg
-                    className="w-16 h-16 text-brand-blue"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
-                  </svg>
-                ),
+                img: '/childhood-vaccination-guide.jpg',
               },
               {
                 t: 'Dental Checkups: Why Twice a Year?',
                 d: 'Prevention and early detection keep you smiling.',
-                icon: (
-                  <svg
-                    className="w-16 h-16 text-brand-blue"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                ),
+                img: '/oral-hygiene-basics.jpg',
               },
             ].map((p, idx) => (
               <Link
@@ -508,8 +514,13 @@ export default function Home() {
                 className={`card card-3d reveal-up opacity-0 translate-y-3 transition hover:scale-105 cursor-pointer block`}
                 style={{ transitionDelay: `${idx * 0.1}s` }}
               >
-                <div className="flex items-center justify-center mb-4 p-4 bg-gradient-to-br from-brand-blue/10 to-brand-green/10 rounded-xl">
-                  {p.icon}
+                <div className="w-full h-36 rounded-xl overflow-hidden mb-2">
+                  <img
+                    src={p.img}
+                    alt={p.t}
+                    className="w-full h-full object-cover"
+                    loading={idx < 2 ? 'eager' : 'lazy'}
+                  />
                 </div>
                 <h3 className="font-semibold mb-2">{p.t}</h3>
                 <p className="muted mb-3">{p.d}</p>

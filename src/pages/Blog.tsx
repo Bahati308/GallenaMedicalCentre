@@ -15,32 +15,32 @@ export default function Blog() {
     {
       t: 'Hydration and Heart Health',
       d: 'Why staying hydrated supports cardiovascular function.',
-      img: 'assets/img/hydration-heart-health.jpg',
+      img: '/hydration-heart-health.jpg',
     },
     {
       t: 'Understanding Blood Pressure',
       d: 'Know your numbers and what they mean.',
-      img: 'assets/img/understanding-blood-pressure.jpg',
+      img: '/understanding-blood-pressure.jpg',
     },
     {
       t: 'Childhood Vaccination Guide',
       d: 'Essential shots and schedules for kids.',
-      img: 'assets/img/childhood-vaccination-guide.jpg',
+      img: '/childhood-vaccination-guide.jpg',
     },
     {
       t: 'Oral Hygiene Basics',
       d: 'Simple daily habits for healthier teeth.',
-      img: 'assets/img/oral-hygiene-basics.jpg',
+      img: '/oral-hygiene-basics.jpg',
     },
     {
       t: 'Preparing for Surgery',
       d: 'What to expect from pre-op to recovery.',
-      img: 'assets/img/preparing-for-surgery.jpg',
+      img: '/preparing-for-surgery.jpg',
     },
     {
       t: 'Managing Diabetes',
       d: 'Diet, exercise, and medication tips.',
-      img: 'assets/img/managing-diabetes.jpg',
+      img: '/managing-diabetes.jpg',
     },
   ];
 
