@@ -1,17 +1,47 @@
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
+
+function titleToSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
 
 export default function Blog() {
   const posts = [
     {
       t: 'Hydration and Heart Health',
       d: 'Why staying hydrated supports cardiovascular function.',
+      img: 'assets/img/hydration-heart-health.jpg',
     },
-    { t: 'Understanding Blood Pressure', d: 'Know your numbers and what they mean.' },
-    { t: 'Childhood Vaccination Guide', d: 'Essential shots and schedules for kids.' },
-    { t: 'Oral Hygiene Basics', d: 'Simple daily habits for healthier teeth.' },
-    { t: 'Preparing for Surgery', d: 'What to expect from pre-op to recovery.' },
-    { t: 'Managing Diabetes', d: 'Diet, exercise, and medication tips.' },
+    {
+      t: 'Understanding Blood Pressure',
+      d: 'Know your numbers and what they mean.',
+      img: 'assets/img/understanding-blood-pressure.jpg',
+    },
+    {
+      t: 'Childhood Vaccination Guide',
+      d: 'Essential shots and schedules for kids.',
+      img: 'assets/img/childhood-vaccination-guide.jpg',
+    },
+    {
+      t: 'Oral Hygiene Basics',
+      d: 'Simple daily habits for healthier teeth.',
+      img: 'assets/img/oral-hygiene-basics.jpg',
+    },
+    {
+      t: 'Preparing for Surgery',
+      d: 'What to expect from pre-op to recovery.',
+      img: 'assets/img/preparing-for-surgery.jpg',
+    },
+    {
+      t: 'Managing Diabetes',
+      d: 'Diet, exercise, and medication tips.',
+      img: 'assets/img/managing-diabetes.jpg',
+    },
   ];
 
   const revealRef = useRef<HTMLDivElement>(null);
@@ -41,20 +71,29 @@ export default function Blog() {
           <p className="muted">Latest updates from our clinicians and community.</p>
         </div>
         <div className="grid gap-5 md:grid-cols-3">
-          {posts.map((p, idx) => (
-            <article
-              key={p.t}
-              className={`card card-3d reveal-up opacity-0 translate-y-3 transition`}
-              style={{ transitionDelay: `${idx * 0.1}s` }}
-            >
-              <div className="w-full h-36 rounded-xl bg-gradient-to-tr from-sky-100 to-emerald-100 border border-slate-200 mb-2 dark:bg-black dark:border-slate-700" />
-              <h3 className="font-semibold">{p.t}</h3>
-              <p className="muted">{p.d}</p>
-              <a className="text-brand-navy font-semibold" href="#">
-                Read more
-              </a>
-            </article>
-          ))}
+          {posts.map((p, idx) => {
+            const slug = titleToSlug(p.t);
+            return (
+              <Link
+                key={p.t}
+                to={`/blog/${slug}`}
+                className={`card card-3d reveal-up opacity-0 translate-y-3 transition hover:scale-105 cursor-pointer block`}
+                style={{ transitionDelay: `${idx * 0.1}s` }}
+              >
+                <div className="w-full h-36 rounded-xl overflow-hidden mb-2">
+                  <img
+                    src={p.img}
+                    alt={p.t}
+                    className="w-full h-full object-cover"
+                    loading={idx < 3 ? 'eager' : 'lazy'}
+                  />
+                </div>
+                <h3 className="font-semibold mb-2">{p.t}</h3>
+                <p className="muted mb-3">{p.d}</p>
+                <span className="text-brand-blue font-semibold">Read more →</span>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

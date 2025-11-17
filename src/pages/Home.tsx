@@ -3,6 +3,14 @@ import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { submitAppointmentForm, type AppointmentFormData } from '../utils/formHandler';
 
+function titleToSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 function useCarousel(length: number, intervalMs = 4500) {
   const [index, setIndex] = useState(0);
   useEffect(() => {
@@ -16,19 +24,11 @@ function useCarousel(length: number, intervalMs = 4500) {
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const gallery = [
-    { src: '/imagetwo.jpg', alt: 'Sunlit outpatient lounge with comfortable seating' },
-    { src: '/imagethree.jpg', alt: 'Nurses collaborating at the nursing station' },
-    { src: '/image5.jpg', alt: 'Modern surgical suite prepared for procedures' },
-    { src: '/image6.jpg', alt: 'Pediatric recovery bed with gentle décor' },
-    { src: '/image7.jpg', alt: 'Dental treatment room equipped for patient care' },
-    { src: '/image8.jpg', alt: 'Maternity ward with attentive midwives' },
-    { src: '/image9.jpg', alt: 'Diagnostic laboratory with advanced equipment' },
-    { src: '/image10.jpg', alt: 'Fully stocked pharmacy and counselling desk' },
-    { src: '/image11.jpg', alt: 'Orthopedic physiotherapy and rehabilitation area' },
-    { src: '/image12.jpg', alt: 'Cardiology monitoring suite with specialists' },
-    { src: '/image13.jpg', alt: 'Exterior of Gallena Medical Centre at dusk' },
-    { src: '/image14.jpg', alt: 'Reception team welcoming arriving patients' },
-    { src: '/image15.jpg', alt: 'Community outreach event hosted by Gallena Medical Centre' },
+    { src: '/image6.jpg', alt: 'Entrance to Gallena Medical Centre' },
+    { src: '/image10.jpg', alt: 'interior view of Gallena Medical Centre' },
+    { src: '/image11.jpg', alt: 'reception area of Gallena Medical Centre' },
+    { src: '/image13.jpg', alt: 'side view of Gallena Medical Centre' },
+    { src: '/image14.jpg', alt: 'a compound suitable for therapy' },
   ];
   const testimonials = [
     { q: 'Professional and kind. My surgery and recovery were smooth.', a: '— Ama K.' },
@@ -37,6 +37,15 @@ export default function Home() {
   ];
   const gIndex = useCarousel(gallery.length, 5000);
   const tIndex = useCarousel(testimonials.length);
+
+  // Preload next image in carousel
+  useEffect(() => {
+    const nextIndex = (gIndex + 1) % gallery.length;
+    if (gallery[nextIndex]) {
+      const img = new Image();
+      img.src = gallery[nextIndex].src;
+    }
+  }, [gIndex, gallery]);
 
   // simple intersection reveal
   const revealRef = useRef<HTMLDivElement>(null);
@@ -89,6 +98,8 @@ export default function Home() {
     <div ref={revealRef}>
       <Helmet>
         <title>Gallena Medical Centre | We care to heal</title>
+        {gallery[0] && <link rel="preload" as="image" href={gallery[0].src} fetchPriority="high" />}
+        {gallery[1] && <link rel="preload" as="image" href={gallery[1].src} fetchPriority="high" />}
       </Helmet>
 
       <section className="py-16">
@@ -113,7 +124,7 @@ export default function Home() {
           <div aria-hidden className="reveal-up opacity-0 translate-y-3 transition">
             <div className="w-full h-[280px] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-soft overflow-hidden animate-float-3d">
               <img
-                src="/logo.jpg"
+                src="/logo2.jpg"
                 alt="Gallena Medical Centre at a glance"
                 role="presentation"
                 className="w-full h-full object-cover"
@@ -182,29 +193,97 @@ export default function Home() {
               {
                 t: 'General Consultation',
                 d: 'Thorough primary-care visits with personalised treatment plans and preventive screenings.',
+                icon: (
+                  <svg
+                    className="w-16 h-16 text-brand-blue"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                    />
+                  </svg>
+                ),
               },
               {
                 t: 'Specialist Clinics',
                 d: 'Focused reviews across cardiology, pediatrics, orthopedics, ENT, dermatology, and more.',
+                icon: (
+                  <svg
+                    className="w-16 h-16 text-brand-blue"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                    />
+                  </svg>
+                ),
               },
               {
                 t: 'Outpatient Services',
                 d: 'Same-day diagnostics, wound care, infusions, and follow-up visits without admission.',
+                icon: (
+                  <svg
+                    className="w-16 h-16 text-brand-blue"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
+                  </svg>
+                ),
               },
               {
                 t: 'Minor & Major Surgeries',
                 d: 'Elective and emergency procedures in fully equipped theatres with attentive recovery care.',
+                icon: (
+                  <svg
+                    className="w-16 h-16 text-brand-blue"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+                    />
+                  </svg>
+                ),
               },
-            ].map((service, idx) => (
-              <article
-                key={service.t}
-                className={`card card-3d reveal-up opacity-0 translate-y-3 transition`}
-                style={{ transitionDelay: `${idx * 0.05}s` }}
-              >
-                <h3 className="font-semibold text-lg">{service.t}</h3>
-                <p className="muted">{service.d}</p>
-              </article>
-            ))}
+            ].map((service, idx) => {
+              const slug = titleToSlug(service.t);
+              return (
+                <Link
+                  key={service.t}
+                  to={`/services/${slug}`}
+                  className={`card card-3d reveal-up opacity-0 translate-y-3 transition hover:scale-105 cursor-pointer block`}
+                  style={{ transitionDelay: `${idx * 0.05}s` }}
+                >
+                  <div className="flex items-center justify-center mb-4 p-4 bg-gradient-to-br from-brand-blue/10 to-brand-green/10 rounded-xl">
+                    {service.icon}
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">{service.t}</h3>
+                  <p className="muted mb-3">{service.d}</p>
+                  <span className="text-brand-blue text-sm font-medium">Learn more →</span>
+                </Link>
+              );
+            })}
           </div>
           <div className="text-center mt-6 reveal-up opacity-0 translate-y-3 transition">
             <Link to="/services" className="btn btn-outline btn-3d">
@@ -243,8 +322,12 @@ export default function Home() {
                       <img
                         src={item.src}
                         alt={item.alt}
-                        className="w-full h-[320px] object-cover"
-                        loading={idx === 0 ? 'eager' : 'lazy'}
+                        className="w-full h-[600px] md:h-[700px] lg:h-[800px] object-cover"
+                        loading={idx <= 1 ? 'eager' : 'lazy'}
+                        fetchPriority={idx === 0 ? 'high' : idx === 1 ? 'high' : 'auto'}
+                        decoding="async"
+                        width="1200"
+                        height="800"
                       />
                     </div>
                   </article>
@@ -364,28 +447,74 @@ export default function Home() {
               {
                 t: '5 Habits for a Healthier Heart',
                 d: 'Small lifestyle changes that make a big difference.',
+                icon: (
+                  <svg
+                    className="w-16 h-16 text-brand-blue"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                ),
               },
               {
                 t: 'What to Expect in Prenatal Care',
                 d: 'Your guide to a safe and informed pregnancy journey.',
+                icon: (
+                  <svg
+                    className="w-16 h-16 text-brand-blue"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                ),
               },
               {
                 t: 'Dental Checkups: Why Twice a Year?',
                 d: 'Prevention and early detection keep you smiling.',
+                icon: (
+                  <svg
+                    className="w-16 h-16 text-brand-blue"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                ),
               },
             ].map((p, idx) => (
-              <article
+              <Link
                 key={idx}
-                className={`card card-3d reveal-up opacity-0 translate-y-3 transition`}
+                to="/blog"
+                className={`card card-3d reveal-up opacity-0 translate-y-3 transition hover:scale-105 cursor-pointer block`}
                 style={{ transitionDelay: `${idx * 0.1}s` }}
               >
-                <div className="w-full h-36 rounded-xl bg-gradient-to-tr from-sky-100 to-emerald-100 border border-slate-200 mb-2 dark:bg-[#0f172a] dark:bg-none dark:border-slate-700" />
-                <h3 className="font-semibold">{p.t}</h3>
-                <p className="muted">{p.d}</p>
-                <Link to="/blog" className="text-brand-navy font-semibold">
-                  Read more
-                </Link>
-              </article>
+                <div className="flex items-center justify-center mb-4 p-4 bg-gradient-to-br from-brand-blue/10 to-brand-green/10 rounded-xl">
+                  {p.icon}
+                </div>
+                <h3 className="font-semibold mb-2">{p.t}</h3>
+                <p className="muted mb-3">{p.d}</p>
+                <span className="text-brand-blue font-semibold">Read more →</span>
+              </Link>
             ))}
           </div>
           <div className="text-center mt-6 reveal-up opacity-0 translate-y-3 transition">
