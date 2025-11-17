@@ -21,7 +21,7 @@ const blogPosts: Record<string, BlogPost> = {
   'hydration-and-heart-health': {
     title: 'Hydration and Heart Health',
     shortDescription: 'Why staying hydrated supports cardiovascular function.',
-    image: 'assets/img/hydration-heart-health.jpg',
+    image: '/hydration-heart-health.jpg',
     author: 'Dr. Sarah Mwangi',
     date: 'November 15, 2024',
     category: 'Cardiology',
@@ -65,7 +65,7 @@ const blogPosts: Record<string, BlogPost> = {
   'understanding-blood-pressure': {
     title: 'Understanding Blood Pressure',
     shortDescription: 'Know your numbers and what they mean.',
-    image: 'assets/img/understanding-blood-pressure.jpg',
+    image: '/understanding-blood-pressure.jpg',
     author: 'Dr. James Ochieng',
     date: 'November 12, 2024',
     category: 'Cardiology',
@@ -109,7 +109,7 @@ const blogPosts: Record<string, BlogPost> = {
   'childhood-vaccination-guide': {
     title: 'Childhood Vaccination Guide',
     shortDescription: 'Essential shots and schedules for kids.',
-    image: 'assets/img/childhood-vaccination-guide.jpg',
+    image: '/childhood-vaccination-guide.jpg',
     author: 'Dr. Mary Nakato',
     date: 'November 10, 2024',
     category: 'Pediatrics',
@@ -153,7 +153,7 @@ const blogPosts: Record<string, BlogPost> = {
   'oral-hygiene-basics': {
     title: 'Oral Hygiene Basics',
     shortDescription: 'Simple daily habits for healthier teeth.',
-    image: 'assets/img/oral-hygiene-basics.jpg',
+    image: '/oral-hygiene-basics.jpg',
     author: 'Dr. Peter Kigozi',
     date: 'November 8, 2024',
     category: 'Dental',
@@ -202,7 +202,7 @@ const blogPosts: Record<string, BlogPost> = {
   'preparing-for-surgery': {
     title: 'Preparing for Surgery',
     shortDescription: 'What to expect from pre-op to recovery.',
-    image: 'assets/img/preparing-for-surgery.jpg',
+    image: '/preparing-for-surgery.jpg',
     author: 'Dr. Robert Ssemwogerere',
     date: 'November 5, 2024',
     category: 'Surgery',
@@ -251,7 +251,7 @@ const blogPosts: Record<string, BlogPost> = {
   'managing-diabetes': {
     title: 'Managing Diabetes',
     shortDescription: 'Diet, exercise, and medication tips.',
-    image: 'assets/img/managing-diabetes.jpg',
+    image: '/managing-diabetes.jpg',
     author: 'Dr. Grace Nalubega',
     date: 'November 3, 2024',
     category: 'Endocrinology',
