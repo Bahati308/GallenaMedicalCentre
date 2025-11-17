@@ -1,5 +1,14 @@
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
+
+function titleToSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
 
 export default function Services() {
   const services = [
@@ -74,16 +83,21 @@ export default function Services() {
           </p>
         </div>
         <div className="grid gap-5 md:grid-cols-4">
-          {services.map((s, idx) => (
-            <article
-              key={s.t}
-              className={`card card-3d reveal-up opacity-0 translate-y-3 transition`}
-              style={{ transitionDelay: `${idx * 0.05}s` }}
-            >
-              <h3 className="font-semibold text-lg">{s.t}</h3>
-              <p>{s.d}</p>
-            </article>
-          ))}
+          {services.map((s, idx) => {
+            const slug = titleToSlug(s.t);
+            return (
+              <Link
+                key={s.t}
+                to={`/services/${slug}`}
+                className={`card card-3d reveal-up opacity-0 translate-y-3 transition hover:scale-105 cursor-pointer block`}
+                style={{ transitionDelay: `${idx * 0.05}s` }}
+              >
+                <h3 className="font-semibold text-lg mb-2">{s.t}</h3>
+                <p className="muted mb-3">{s.d}</p>
+                <span className="text-brand-blue text-sm font-medium">Learn more →</span>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

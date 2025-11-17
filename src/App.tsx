@@ -6,8 +6,10 @@ import Footer from './components/Footer';
 import ScrollBg from './components/ScrollBg';
 import Home from './pages/Home';
 import Services from './pages/Services';
+import ServiceDetail from './pages/ServiceDetail';
 import Staff from './pages/Staff';
 import Blog from './pages/Blog';
+import BlogDetail from './pages/BlogDetail';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Chatbot from './components/Chatbot';
@@ -42,8 +44,10 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/services" element={<Services />} />
+              <Route path="/services/:serviceSlug" element={<ServiceDetail />} />
               <Route path="/staff" element={<Staff />} />
               <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:postSlug" element={<BlogDetail />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
               <Route
