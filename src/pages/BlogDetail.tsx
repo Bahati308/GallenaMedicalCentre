@@ -355,35 +355,43 @@ export default function BlogDetail() {
 
           <article className="reveal-up opacity-0 translate-y-3 transition">
             <div className="mb-8">
-              <h1 className="text-4xl font-semibold mb-6">{post.title}</h1>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-6">{post.title}</h1>
 
-              <div className="card card-3d p-6 mb-6">
-                <table className="w-full">
+              <div className="card card-3d p-4 sm:p-6 mb-6 overflow-x-auto">
+                <table className="w-full min-w-[280px]">
                   <tbody>
                     <tr className="border-b border-slate-200 dark:border-slate-700">
-                      <td className="py-3 px-4 font-semibold text-brand-blue w-1/3">Category</td>
-                      <td className="py-3 px-4">
-                        <span className="inline-block px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue text-sm font-medium">
+                      <td className="py-3 px-2 sm:px-4 font-semibold text-brand-blue text-sm sm:text-base w-1/3 sm:w-1/4">
+                        Category
+                      </td>
+                      <td className="py-3 px-2 sm:px-4">
+                        <span className="inline-block px-2 sm:px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue text-xs sm:text-sm font-medium">
                           {post.category}
                         </span>
                       </td>
                     </tr>
                     <tr className="border-b border-slate-200 dark:border-slate-700">
-                      <td className="py-3 px-4 font-semibold text-brand-blue w-1/3">Author</td>
-                      <td className="py-3 px-4 text-slate-700 dark:text-slate-300">
+                      <td className="py-3 px-2 sm:px-4 font-semibold text-brand-blue text-sm sm:text-base w-1/3 sm:w-1/4">
+                        Author
+                      </td>
+                      <td className="py-3 px-2 sm:px-4 text-slate-700 dark:text-slate-300 text-sm sm:text-base">
                         {post.author}
                       </td>
                     </tr>
                     <tr>
-                      <td className="py-3 px-4 font-semibold text-brand-blue w-1/3">Published</td>
-                      <td className="py-3 px-4 text-slate-700 dark:text-slate-300">{post.date}</td>
+                      <td className="py-3 px-2 sm:px-4 font-semibold text-brand-blue text-sm sm:text-base w-1/3 sm:w-1/4">
+                        Published
+                      </td>
+                      <td className="py-3 px-2 sm:px-4 text-slate-700 dark:text-slate-300 text-sm sm:text-base">
+                        {post.date}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </div>
 
-            <div className="w-full h-96 rounded-xl overflow-hidden mb-8">
+            <div className="w-full h-48 sm:h-64 md:h-96 rounded-xl overflow-hidden mb-8">
               <img
                 src={post.image}
                 alt={post.title}
@@ -393,17 +401,17 @@ export default function BlogDetail() {
             </div>
 
             <div className="prose prose-lg max-w-none">
-              <div className="card card-3d p-6 mb-8">
-                <p className="text-lg leading-relaxed">{post.content.introduction}</p>
+              <div className="card card-3d p-4 sm:p-6 mb-8">
+                <p className="text-base sm:text-lg leading-relaxed">{post.content.introduction}</p>
               </div>
 
-              <div className="grid gap-6 md:grid-cols-2 mb-8">
+              <div className="grid gap-6 grid-cols-1 md:grid-cols-2 mb-8">
                 {post.content.sections.map((section, idx) => (
-                  <div key={idx} className="card card-3d p-6">
-                    <h2 className="text-xl font-semibold mb-4 text-brand-blue border-b border-slate-200 dark:border-slate-700 pb-2">
+                  <div key={idx} className="card card-3d p-4 sm:p-6">
+                    <h2 className="text-lg sm:text-xl font-semibold mb-4 text-brand-blue border-b border-slate-200 dark:border-slate-700 pb-2">
                       {section.heading}
                     </h2>
-                    <p className="leading-relaxed text-slate-700 dark:text-slate-300">
+                    <p className="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
                       {section.content}
                     </p>
                   </div>
@@ -411,12 +419,12 @@ export default function BlogDetail() {
               </div>
 
               {post.content.keyPoints && (
-                <div className="card card-3d p-6 mb-8 overflow-hidden">
-                  <h2 className="text-2xl font-semibold mb-6 text-brand-blue border-b border-slate-200 dark:border-slate-700 pb-3">
+                <div className="card card-3d p-4 sm:p-6 mb-8 overflow-hidden">
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 text-brand-blue border-b border-slate-200 dark:border-slate-700 pb-2 sm:pb-3">
                     Key Takeaways
                   </h2>
                   <div className="overflow-x-auto">
-                    <table className="w-full border-collapse">
+                    <table className="w-full border-collapse min-w-[300px]">
                       <tbody>
                         {post.content.keyPoints.map((point, idx) => (
                           <tr
@@ -427,13 +435,15 @@ export default function BlogDetail() {
                                 : 'bg-white dark:bg-black'
                             } hover:bg-brand-blue/5 transition-colors`}
                           >
-                            <td className="py-4 px-6 w-12">
-                              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-brand-green/20 text-brand-green font-semibold text-sm">
+                            <td className="py-3 sm:py-4 px-3 sm:px-6 w-12 sm:w-16">
+                              <span className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-brand-green/20 text-brand-green font-semibold text-xs sm:text-sm">
                                 {idx + 1}
                               </span>
                             </td>
-                            <td className="py-4 px-6">
-                              <span className="text-slate-700 dark:text-slate-300">{point}</span>
+                            <td className="py-3 sm:py-4 px-3 sm:px-6">
+                              <span className="text-sm sm:text-base text-slate-700 dark:text-slate-300">
+                                {point}
+                              </span>
                             </td>
                           </tr>
                         ))}
@@ -443,17 +453,17 @@ export default function BlogDetail() {
                 </div>
               )}
 
-              <div className="card card-3d p-6 mb-8 bg-gradient-to-br from-brand-blue/5 to-brand-green/5 border-2 border-brand-blue/20">
-                <h2 className="text-2xl font-semibold mb-4 text-brand-blue">Summary</h2>
-                <p className="leading-relaxed text-lg text-slate-700 dark:text-slate-300">
+              <div className="card card-3d p-4 sm:p-6 mb-8 bg-gradient-to-br from-brand-blue/5 to-brand-green/5 border-2 border-brand-blue/20">
+                <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-brand-blue">Summary</h2>
+                <p className="leading-relaxed text-base sm:text-lg text-slate-700 dark:text-slate-300">
                   {post.content.conclusion}
                 </p>
               </div>
             </div>
 
-            <div className="border-t border-slate-200 dark:border-slate-700 pt-8 mt-8">
-              <div className="text-center">
-                <Link to="/#consultation" className="btn btn-primary btn-3d mr-4">
+            <div className="border-t border-slate-200 dark:border-slate-700 pt-6 sm:pt-8 mt-6 sm:mt-8">
+              <div className="text-center flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+                <Link to="/#consultation" className="btn btn-primary btn-3d">
                   Book Consultation
                 </Link>
                 <Link to="/blog" className="btn btn-outline btn-3d">

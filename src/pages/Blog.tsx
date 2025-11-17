@@ -67,10 +67,10 @@ export default function Blog() {
       </Helmet>
       <div className="container-1120">
         <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
-          <h1 className="text-3xl font-semibold">Health Tips & News</h1>
+          <h1 className="text-2xl sm:text-3xl font-semibold">Health Tips & News</h1>
           <p className="muted">Latest updates from our clinicians and community.</p>
         </div>
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
           {posts.map((p, idx) => {
             const slug = titleToSlug(p.t);
             return (

@@ -77,12 +77,12 @@ export default function Services() {
       </Helmet>
       <div className="container-1120">
         <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
-          <h1 className="text-3xl font-semibold">Our Medical Services</h1>
+          <h1 className="text-2xl sm:text-3xl font-semibold">Our Medical Services</h1>
           <p className="muted">
             Comprehensive, patient-centered services delivered by experienced specialists.
           </p>
         </div>
-        <div className="grid gap-5 md:grid-cols-4">
+        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {services.map((s, idx) => {
             const slug = titleToSlug(s.t);
             return (
