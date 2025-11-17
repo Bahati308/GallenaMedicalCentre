@@ -1,16 +1,23 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [elevated, setElevated] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const onScroll = () => setElevated(window.scrollY > 4);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // Close menu when route changes
+  useEffect(() => {
+    setOpen(false);
+  }, [location]);
+
   return (
     <header
       id="site-header"
@@ -30,23 +37,46 @@ export default function Header() {
             Gallena Medical Centre
           </span>
         </Link>
-        <nav className="relative flex-1 flex justify-end" aria-label="Primary">
+        <nav
+          className="relative flex-1 flex justify-end"
+          aria-label="Primary"
+          style={{ position: 'relative' }}
+        >
+          {/* Mobile Menu Button */}
           <button
             aria-expanded={open}
             aria-controls="nav-menu"
-            className="md:hidden bg-white/20 border border-white/30 rounded-xl px-3 py-2 text-white transition-all duration-300 hover:scale-105 active:scale-95"
-            onClick={() => setOpen((v) => !v)}
+            aria-label="Toggle navigation menu"
+            className="md:hidden relative z-50 w-10 h-10 flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 text-white transition-all duration-300 hover:bg-white/20 active:scale-95"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setOpen((v) => !v);
+            }}
           >
-            {open ? '✕' : '☰'} Menu
+            <span
+              className={`block w-6 h-0.5 bg-white transition-all duration-300 ${
+                open ? 'rotate-45 translate-y-2' : ''
+              }`}
+            />
+            <span
+              className={`block w-6 h-0.5 bg-white transition-all duration-300 ${
+                open ? 'opacity-0' : 'opacity-100'
+              }`}
+            />
+            <span
+              className={`block w-6 h-0.5 bg-white transition-all duration-300 ${
+                open ? '-rotate-45 -translate-y-2' : ''
+              }`}
+            />
           </button>
-          <ul
-            id="nav-menu"
-            className={`md:flex gap-3 lg:gap-5 list-none m-0 p-0 absolute md:static right-0 top-12 bg-brand-green md:bg-transparent border md:border-0 border-white/20 rounded-xl md:rounded-none px-4 py-3 md:p-0 min-w-[220px] transition-all duration-300 ${open ? 'flex flex-col animate-scale-in' : 'hidden md:flex'}`}
-          >
+
+          {/* Desktop Navigation */}
+          <ul id="nav-menu" className="hidden md:flex gap-3 lg:gap-5 list-none m-0 p-0">
             <li>
               <NavLink
                 to="/services"
-                className="px-2 py-2 rounded-lg text-white font-semibold text-lg md:text-xl transition-all duration-300 hover:scale-[1.05] font-heading border border-transparent hover:border-white/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="px-3 py-2 rounded-lg text-white font-semibold text-base md:text-lg transition-all duration-300 hover:bg-white/10 font-heading"
               >
                 Services
               </NavLink>
@@ -54,7 +84,7 @@ export default function Header() {
             <li>
               <NavLink
                 to="/staff"
-                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-all duration-300 hover:scale-[1.1] font-heading border border-transparent hover:border-[#4f8dff]/80"
+                className="px-3 py-2 rounded-lg text-white font-semibold text-base md:text-lg transition-all duration-300 hover:bg-white/10 font-heading"
               >
                 Staff
               </NavLink>
@@ -62,7 +92,7 @@ export default function Header() {
             <li>
               <NavLink
                 to="/blog"
-                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-all duration-300 hover:scale-[1.1] font-heading border border-transparent hover:border-[#4f8dff]/80"
+                className="px-3 py-2 rounded-lg text-white font-semibold text-base md:text-lg transition-all duration-300 hover:bg-white/10 font-heading"
               >
                 Blog
               </NavLink>
@@ -70,7 +100,7 @@ export default function Header() {
             <li>
               <NavLink
                 to="/contact"
-                className="px-2 py-2 rounded-lg text-white font-bold text-xl md:text-2xl transition-all duration-300 hover:scale-[1.1] font-heading border border-transparent hover:border-[#4f8dff]/80"
+                className="px-3 py-2 rounded-lg text-white font-semibold text-base md:text-lg transition-all duration-300 hover:bg-white/10 font-heading"
               >
                 Contact
               </NavLink>
@@ -87,6 +117,104 @@ export default function Header() {
           <ThemeToggle />
         </div>
       </div>
+
+      {/* Mobile Menu - Using same pattern as appointment/contact modals */}
+      {open && (
+        <div className="fixed inset-0 z-50 md:hidden" onClick={() => setOpen(false)}>
+          {/* Backdrop - No blur */}
+          <div className="absolute inset-0 bg-black/50 animate-fade-in" />
+
+          {/* Menu Dropdown - Popup below navbar */}
+          <div
+            className="absolute top-16 right-4 w-48"
+            style={{
+              zIndex: 10,
+              background: '#000000',
+              borderRadius: '12px',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <nav className="py-2">
+              <ul className="list-none m-0 p-0">
+                <li>
+                  <NavLink
+                    to="/services"
+                    onClick={() => setOpen(false)}
+                    className={({ isActive }) =>
+                      `flex items-center justify-center px-4 py-3 transition-all duration-300 hover:bg-white/20 ${
+                        isActive ? 'bg-white/20' : ''
+                      }`
+                    }
+                  >
+                    <span
+                      className="font-bold italic text-base text-white"
+                      style={{ fontSize: '1.3em' }}
+                    >
+                      Services
+                    </span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/staff"
+                    onClick={() => setOpen(false)}
+                    className={({ isActive }) =>
+                      `flex items-center justify-center px-4 py-3 transition-all duration-300 hover:bg-white/20 ${
+                        isActive ? 'bg-white/20' : ''
+                      }`
+                    }
+                  >
+                    <span
+                      className="font-bold italic text-base text-white"
+                      style={{ fontSize: '1.3em' }}
+                    >
+                      Staff
+                    </span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/blog"
+                    onClick={() => setOpen(false)}
+                    className={({ isActive }) =>
+                      `flex items-center justify-center px-4 py-3 transition-all duration-300 hover:bg-white/20 ${
+                        isActive ? 'bg-white/20' : ''
+                      }`
+                    }
+                  >
+                    <span
+                      className="font-bold italic text-base text-white"
+                      style={{ fontSize: '1.3em' }}
+                    >
+                      Blog
+                    </span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/contact"
+                    onClick={() => setOpen(false)}
+                    className={({ isActive }) =>
+                      `flex items-center justify-center px-4 py-3 transition-all duration-300 hover:bg-white/20 ${
+                        isActive ? 'bg-white/20' : ''
+                      }`
+                    }
+                  >
+                    <span
+                      className="font-bold italic text-base text-white"
+                      style={{ fontSize: '1.3em' }}
+                    >
+                      Contact
+                    </span>
+                  </NavLink>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

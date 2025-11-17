@@ -102,27 +102,30 @@ export default function Home() {
         {gallery[1] && <link rel="preload" as="image" href={gallery[1].src} fetchPriority="high" />}
       </Helmet>
 
-      <section className="py-16">
-        <div className="container-1120 grid md:grid-cols-[1.1fr_.9fr] gap-8">
+      <section className="py-8 sm:py-12 md:py-16">
+        <div className="container-1120 grid grid-cols-1 md:grid-cols-[1.1fr_.9fr] gap-6 md:gap-8">
           <div className="space-y-4">
-            <h1 className="text-4xl font-semibold reveal-up opacity-0 translate-y-3 transition">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold reveal-up opacity-0 translate-y-3 transition">
               We Care to Heal
             </h1>
-            <p className="muted">
+            <p className="text-sm sm:text-base muted">
               At Gallena Medical Centre, we deliver trusted, patient-centered healthcare across
               general medicine, dental, maternity, surgery, and more.
             </p>
-            <div className="flex gap-3 reveal-up opacity-0 translate-y-3 transition">
-              <button onClick={handleOpenModal} className="btn btn-primary btn-3d">
+            <div className="flex flex-col sm:flex-row gap-3 reveal-up opacity-0 translate-y-3 transition">
+              <button
+                onClick={handleOpenModal}
+                className="btn btn-primary btn-3d text-sm sm:text-base"
+              >
                 Book Consultation
               </button>
-              <Link to="/services" className="btn btn-outline btn-3d">
+              <Link to="/services" className="btn btn-outline btn-3d text-sm sm:text-base">
                 Explore Services
               </Link>
             </div>
           </div>
           <div aria-hidden className="reveal-up opacity-0 translate-y-3 transition">
-            <div className="w-full h-[280px] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-soft overflow-hidden animate-float-3d">
+            <div className="w-full h-[200px] sm:h-[250px] md:h-[280px] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-soft overflow-hidden animate-float-3d">
               <img
                 src="/logo2.jpg"
                 alt="Gallena Medical Centre at a glance"
@@ -138,7 +141,7 @@ export default function Home() {
       <section id="about" className="py-16">
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
-            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
+            <h2 className="btn btn-primary text-lg sm:text-xl md:text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
               About Us
             </h2>
             <p className="muted">
@@ -147,7 +150,7 @@ export default function Home() {
               outcomes and a comfortable patient experience.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
             {[
               {
                 t: 'Modern Facilities',
@@ -229,7 +232,7 @@ export default function Home() {
       >
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
-            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
+            <h2 className="btn btn-primary text-lg sm:text-xl md:text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
               Medical Services
             </h2>
             <p className="muted">
@@ -347,7 +350,7 @@ export default function Home() {
       >
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
-            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
+            <h2 className="btn btn-primary text-lg sm:text-xl md:text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
               Take a Quick Tour
             </h2>
             <p className="muted">
@@ -370,7 +373,7 @@ export default function Home() {
                       <img
                         src={item.src}
                         alt={item.alt}
-                        className="w-full h-[600px] md:h-[700px] lg:h-[800px] object-cover"
+                        className="w-full h-[300px] sm:h-[400px] md:h-[600px] lg:h-[800px] object-cover"
                         loading={idx <= 1 ? 'eager' : 'lazy'}
                         fetchPriority={idx === 0 ? 'high' : idx === 1 ? 'high' : 'auto'}
                         decoding="async"
@@ -407,11 +410,13 @@ export default function Home() {
 
           {/* Modal Content */}
           <div
-            className="relative bg-white dark:bg-[#050505] rounded-2xl shadow-2xl w-[95vw] md:w-[60vw] max-h-[90vh] overflow-y-auto animate-bounce-in-3d z-10"
+            className="relative bg-white dark:bg-[#050505] rounded-2xl shadow-2xl w-[95vw] sm:w-[90vw] md:w-[70vw] lg:w-[60vw] max-h-[90vh] overflow-y-auto animate-bounce-in-3d z-10"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-gradient-to-r from-brand-blue to-brand-green px-6 py-4 flex items-center justify-between z-20">
-              <h2 className="text-2xl font-bold text-white font-heading">Book Appointment</h2>
+            <div className="sticky top-0 bg-gradient-to-r from-brand-blue to-brand-green px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between z-20">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white font-heading">
+                Book Appointment
+              </h2>
               <button
                 onClick={handleCloseModal}
                 className="text-white hover:text-slate-200 text-2xl font-bold transition-transform duration-300 hover:scale-125"
@@ -434,7 +439,7 @@ export default function Home() {
       >
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
-            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
+            <h2 className="btn btn-primary text-lg sm:text-xl md:text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
               Our Team
             </h2>
             <p className="muted">Dedicated professionals delivering exceptional care.</p>
@@ -485,7 +490,7 @@ export default function Home() {
       <section id="blog" className="py-16">
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
-            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
+            <h2 className="btn btn-primary text-lg sm:text-xl md:text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
               From Our Blog
             </h2>
             <p className="muted">Health tips, hospital news, and community updates.</p>
@@ -542,7 +547,7 @@ export default function Home() {
       >
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
-            <h2 className="btn btn-primary text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
+            <h2 className="btn btn-primary text-lg sm:text-xl md:text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
               Patient Testimonials
             </h2>
             <p className="muted">Real stories from those we serve.</p>
@@ -697,36 +702,42 @@ function AppointmentForm({ onClose }: { onClose?: () => void }) {
   return (
     <form onSubmit={onSubmit} noValidate>
       <div className="space-y-4">
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <label className="flex flex-col gap-2">
-            <span className="font-semibold text-slate-900 dark:text-slate-100">Full Name</span>
+            <span className="font-semibold text-sm sm:text-base text-slate-900 dark:text-slate-100">
+              Full Name
+            </span>
             <input
               name="fullName"
               required
-              className="form-input-modern"
+              className="form-input-modern text-sm sm:text-base"
               placeholder="Your full name"
             />
           </label>
           <label className="flex flex-col gap-2">
-            <span className="font-semibold text-slate-900 dark:text-slate-100">Email</span>
+            <span className="font-semibold text-sm sm:text-base text-slate-900 dark:text-slate-100">
+              Email
+            </span>
             <input
               type="email"
               name="email"
               required
               onChange={handleEmailChange}
-              className={`form-input-modern ${!emailValid ? 'border-red-500 bg-red-50 dark:bg-red-900/40 dark:border-red-400' : ''}`}
+              className={`form-input-modern text-sm sm:text-base ${!emailValid ? 'border-red-500 bg-red-50 dark:bg-red-900/40 dark:border-red-400' : ''}`}
               placeholder="you@example.com"
             />
             {!emailValid && (
-              <span className="text-red-600 dark:text-red-300 text-sm font-medium animate-fade-in">
+              <span className="text-red-600 dark:text-red-300 text-xs sm:text-sm font-medium animate-fade-in">
                 {emailError}
               </span>
             )}
           </label>
         </div>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <label className="flex flex-col gap-2">
-            <span className="font-semibold text-slate-900 dark:text-slate-100">Phone Number</span>
+            <span className="font-semibold text-sm sm:text-base text-slate-900 dark:text-slate-100">
+              Phone Number
+            </span>
             <input
               name="phone"
               required
@@ -735,7 +746,7 @@ function AppointmentForm({ onClose }: { onClose?: () => void }) {
             />
           </label>
           <label className="flex flex-col gap-2">
-            <span className="font-semibold text-slate-900 dark:text-slate-100">
+            <span className="font-semibold text-sm sm:text-base text-slate-900 dark:text-slate-100">
               Preferred Date &amp; Time
             </span>
             <input

@@ -405,13 +405,15 @@ export default function ServiceDetail() {
           </div>
 
           <div className="reveal-up opacity-0 translate-y-3 transition">
-            <h1 className="text-4xl font-semibold mb-4">{service.title}</h1>
-            <p className="text-lg muted mb-8">{service.fullDescription}</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-4">{service.title}</h1>
+            <p className="text-base sm:text-lg muted mb-8">{service.fullDescription}</p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 mb-8">
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 mb-8">
             <div className="card card-3d reveal-up opacity-0 translate-y-3 transition">
-              <h2 className="text-2xl font-semibold mb-4 text-brand-blue">What We Offer</h2>
+              <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-brand-blue">
+                What We Offer
+              </h2>
               <ul className="space-y-2">
                 {service.features.map((feature, idx) => (
                   <li key={idx} className="flex items-start">
@@ -423,7 +425,9 @@ export default function ServiceDetail() {
             </div>
 
             <div className="card card-3d reveal-up opacity-0 translate-y-3 transition">
-              <h2 className="text-2xl font-semibold mb-4 text-brand-blue">What to Expect</h2>
+              <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-brand-blue">
+                What to Expect
+              </h2>
               <ul className="space-y-2">
                 {service.whatToExpect.map((item, idx) => (
                   <li key={idx} className="flex items-start">
@@ -436,7 +440,9 @@ export default function ServiceDetail() {
           </div>
 
           <div className="card card-3d reveal-up opacity-0 translate-y-3 transition mb-8">
-            <h2 className="text-2xl font-semibold mb-4 text-brand-blue">When to Visit</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-brand-blue">
+              When to Visit
+            </h2>
             <ul className="space-y-2">
               {service.whenToVisit.map((item, idx) => (
                 <li key={idx} className="flex items-start">
@@ -456,8 +462,8 @@ export default function ServiceDetail() {
             </div>
           )}
 
-          <div className="text-center reveal-up opacity-0 translate-y-3 transition">
-            <Link to="/#consultation" className="btn btn-primary btn-3d mr-4">
+          <div className="text-center reveal-up opacity-0 translate-y-3 transition flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+            <Link to="/#consultation" className="btn btn-primary btn-3d">
               Book Consultation
             </Link>
             <Link to="/services" className="btn btn-outline btn-3d">
