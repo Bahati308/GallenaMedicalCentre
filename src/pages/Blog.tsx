@@ -1,6 +1,6 @@
-import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
+import SEO from '../components/SEO';
 
 function titleToSlug(title: string): string {
   return title
@@ -62,9 +62,11 @@ export default function Blog() {
 
   return (
     <section className="py-16" ref={revealRef}>
-      <Helmet>
-        <title>Blog | Gallena Medical Centre</title>
-      </Helmet>
+      <SEO
+        title="Health Blog"
+        description="Health tips, medical news, and community updates from Gallena Medical Centre. Learn about heart health, diabetes management, vaccination, oral hygiene, and more."
+        canonical="/blog"
+      />
       <div className="container-1120">
         <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
           <h1 className="text-2xl sm:text-3xl font-semibold">Health Tips & News</h1>

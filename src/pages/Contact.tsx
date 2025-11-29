@@ -1,6 +1,6 @@
-import { Helmet } from 'react-helmet-async';
 import { useState, useEffect, useRef } from 'react';
 import { submitContactForm, type ContactFormData } from '../utils/formHandler';
+import SEO from '../components/SEO';
 
 export default function Contact() {
   const [status, setStatus] = useState<'idle' | 'ok' | 'err' | 'loading'>('idle');
@@ -96,9 +96,11 @@ export default function Contact() {
   }
   return (
     <section className="py-16" ref={revealRef}>
-      <Helmet>
-        <title>Contact Us | Gallena Medical Centre</title>
-      </Helmet>
+      <SEO
+        title="Contact Us"
+        description="Get in touch with Gallena Medical Centre. Located in Wakiso, Uganda. Contact us via phone, email, WhatsApp, or visit us at Valley View Estate - Kitagobwa, Buwambo Rd."
+        canonical="/contact"
+      />
       <div className="container-1120">
         <div className="max-w-3xl mx-auto text-center mb-12 reveal-up opacity-0 translate-y-3 transition">
           <h1 className="text-5xl font-bold mb-4">Contact Us</h1>

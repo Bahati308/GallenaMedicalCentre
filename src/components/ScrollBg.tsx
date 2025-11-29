@@ -1,42 +1,5 @@
 import { useEffect } from 'react';
 
-function lerp(a: number, b: number, t: number) {
-  return Math.round(a + (b - a) * t);
-}
-
-function hexToRgb(hex: string) {
-  const m = hex.replace('#', '');
-  const bigint = parseInt(m, 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
-  return { r, g, b };
-}
-
-function mix(c1: string, c2: string, t: number) {
-  const a = hexToRgb(c1);
-  const b = hexToRgb(c2);
-  return `rgb(${lerp(a.r, b.r, t)}, ${lerp(a.g, b.g, t)}, ${lerp(a.b, b.b, t)})`;
-}
-
-function _rgbStringToRgb(str: string) {
-  const m = str.match(/rgb\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\)/i);
-  if (!m || m.length < 4) return { r: 255, g: 255, b: 255 };
-  return {
-    r: parseInt(m[1] ?? '255', 10),
-    g: parseInt(m[2] ?? '255', 10),
-    b: parseInt(m[3] ?? '255', 10),
-  };
-}
-
-function _relativeLuminance({ r, g, b }: { r: number; g: number; b: number }) {
-  const srgb = [r, g, b].map((v) => {
-    const c = v / 255;
-    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
-  });
-  return 0.2126 * (srgb[0] ?? 0) + 0.7152 * (srgb[1] ?? 0) + 0.0722 * (srgb[2] ?? 0);
-}
-
 export default function ScrollBg() {
   useEffect(() => {
     const onScroll = () => {
@@ -48,27 +11,11 @@ export default function ScrollBg() {
         root.style.setProperty('--muted-color', '#94a3b8');
         document.body.style.backgroundColor = '#000000';
       } else {
-        // Light mode: animate background based on scroll
-        const white = '#ffffff';
-        const green = '#10b981';
-        const blue = '#0ea5e9';
-        const doc = document.documentElement;
-        const scrollable = doc.scrollHeight - doc.clientHeight;
-        const p = scrollable > 0 ? Math.min(Math.max(window.scrollY / scrollable, 0), 1) : 0;
-        const seg = p * 3; // 0..3
-        let color = white;
-        if (seg <= 1) {
-          color = mix(white, green, seg);
-        } else if (seg <= 2) {
-          color = mix(green, blue, seg - 1);
-        } else {
-          color = mix(blue, white, seg - 2);
-        }
-        // Force all text to black in light mode
-        root.style.setProperty('--page-bg', color);
-        root.style.setProperty('--text-color', '#000000');
-        root.style.setProperty('--muted-color', '#000000');
-        document.body.style.backgroundColor = '';
+        // Light mode: fixed white background
+        root.style.setProperty('--page-bg', '#ffffff');
+        root.style.setProperty('--text-color', '#0f172a');
+        root.style.setProperty('--muted-color', '#64748b');
+        document.body.style.backgroundColor = '#ffffff';
       }
     };
     onScroll();

@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
+import SEO from '../components/SEO';
 
 interface BlogPost {
   title: string;
@@ -327,7 +328,7 @@ export default function BlogDetail() {
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-3xl font-semibold mb-4">Post Not Found</h1>
-            <p className="muted mb-6">The blog post you're looking for doesn't exist.</p>
+            <p className="muted mb-6">The blog post you&apos;re looking for doesn&apos;t exist.</p>
             <Link to="/blog" className="btn btn-primary">
               View All Posts
             </Link>
@@ -341,10 +342,12 @@ export default function BlogDetail() {
 
   return (
     <section className="py-16" ref={revealRef}>
-      <Helmet>
-        <title>{post.title} | Gallena Medical Centre Blog</title>
-        <meta name="description" content={post.shortDescription} />
-      </Helmet>
+      <SEO
+        title={post.title}
+        description={post.shortDescription}
+        type="article"
+        canonical={`/blog/${postSlug}`}
+      />
       <div className="container-1120">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6 reveal-up opacity-0 translate-y-3 transition">

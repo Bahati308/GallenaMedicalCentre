@@ -36,9 +36,9 @@ npm run build && npm run preview
 
 Project entry: `index.html` → `src/main.tsx` → `src/App.tsx`
 
-Routes: Home `/`, Services `/services`, Staff `/staff`, Blog `/blog`, Contact `/contact`.
+Routes: Home `/`, Services `/services`, Blog `/blog`, Contact `/contact`.
 
-Forms: Appointment form on Home and Contact form are front-end ready. Replace simulated requests with your API endpoint (e.g., `/api/appointments`).
+Forms: Appointment and Contact forms are configured to save data directly to Google Sheets via Google Apps Script. See `FORM_HANDLING.md` for setup instructions.
 
 ## Carbon Design System Integration
 
@@ -47,10 +47,9 @@ Forms: Appointment form on Home and Contact form are front-end ready. Replace si
 - Tailwind utilities still power most component styling, but Carbon tokens/utility classes are available via the loaded stylesheets. Prefer Carbon tokens (e.g., `var(--cds-layer)` colors) when you touch shared styles going forward.
 - Reference Carbon’s React Getting Started guide for additional patterns and components: [Carbon React docs](https://react.carbondesignsystem.com/?path=/docs/getting-started-welcome--welcome&globals=theme:g90).
 
-## Backend Integration
+## Form Integration
 
-- Deploy the Express API (`server.js`) to your hosting platform (Render, Railway, Fly.io, etc.).
-- Set `JWT_SECRET`, database credentials, and email settings in the backend environment.
-- Expose the deployed base URL to the frontend via `VITE_API_ROOT`; the app will call `VITE_API_ROOT + /api/...` for authentication and admin data.
-- Configure `VITE_API_ENDPOINT` and `VITE_CONTACT_API_ENDPOINT` if you want appointment/contact forms to hit different services.
+- Forms are configured to use **Google Sheets via Google Apps Script** (see `FORM_HANDLING.md` for detailed setup).
+- Configure `VITE_GAS_APPOINTMENTS_URL` and `VITE_GAS_CONTACT_URL` in your `.env` file.
+- No backend server required - everything runs client-side and saves directly to Google Sheets.
 - Restart the Vite dev server (or redeploy Netlify) after updating environment variables.
