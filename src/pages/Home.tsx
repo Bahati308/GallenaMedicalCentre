@@ -1,7 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { submitAppointmentForm, type AppointmentFormData } from '../utils/formHandler';
+import SEO from '../components/SEO';
 
 function titleToSlug(title: string): string {
   return title
@@ -23,13 +24,16 @@ function useCarousel(length: number, intervalMs = 4500) {
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const gallery = [
-    { src: '/image6.jpg', alt: 'Entrance to Gallena Medical Centre' },
-    { src: '/image10.jpg', alt: 'interior view of Gallena Medical Centre' },
-    { src: '/image11.jpg', alt: 'reception area of Gallena Medical Centre' },
-    { src: '/image13.jpg', alt: 'side view of Gallena Medical Centre' },
-    { src: '/image14.jpg', alt: 'a compound suitable for therapy' },
-  ];
+  const gallery = useMemo(
+    () => [
+      { src: '/image6.jpg', alt: 'Entrance to Gallena Medical Centre' },
+      { src: '/image10.jpg', alt: 'interior view of Gallena Medical Centre' },
+      { src: '/image11.jpg', alt: 'reception area of Gallena Medical Centre' },
+      { src: '/image13.jpg', alt: 'side view of Gallena Medical Centre' },
+      { src: '/image14.jpg', alt: 'a compound suitable for therapy' },
+    ],
+    []
+  );
   const testimonials = [
     { q: 'Professional and kind. My surgery and recovery were smooth.', a: '— Ama K.' },
     { q: 'The pediatric team made my child feel safe and happy.', a: '— Joseph N.' },
@@ -96,8 +100,13 @@ export default function Home() {
 
   return (
     <div ref={revealRef}>
+      <SEO
+        title="Gallena Medical Centre | We care to heal"
+        description="Gallena Medical Centre offers comprehensive healthcare services including general medicine, dental care, maternity services, surgery, and more. Book your consultation online today."
+        image="/logo2.jpg"
+        canonical="/"
+      />
       <Helmet>
-        <title>Gallena Medical Centre | We care to heal</title>
         {gallery[0] && <link rel="preload" as="image" href={gallery[0].src} fetchPriority="high" />}
         {gallery[1] && <link rel="preload" as="image" href={gallery[1].src} fetchPriority="high" />}
       </Helmet>
@@ -228,7 +237,7 @@ export default function Home() {
 
       <section
         id="services"
-        className="py-16 bg-gradient-to-b from-[#f4fbfb] via-[#f4fbfb] to-transparent dark:bg-black dark:from-black dark:via-black dark:to-transparent"
+        className="py-16 bg-white dark:bg-black dark:from-black dark:via-black dark:to-transparent"
       >
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
@@ -262,7 +271,7 @@ export default function Home() {
               },
               {
                 t: 'Specialist Clinics',
-                d: 'Focused reviews across cardiology, pediatrics, orthopedics, ENT, dermatology, and more.',
+                d: 'General gynecology, gynocology, infetility, pediatrics.',
                 icon: (
                   <svg
                     className="w-16 h-16 text-brand-blue"
@@ -346,7 +355,7 @@ export default function Home() {
 
       <section
         id="tour"
-        className="py-16 bg-gradient-to-b from-[#f4fbfb] via-transparent to-[#eef8f8] dark:bg-black dark:from-black dark:via-black/20 dark:to-black"
+        className="py-16 bg-white dark:bg-black dark:from-black dark:via-black/20 dark:to-black"
       >
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
@@ -433,60 +442,6 @@ export default function Home() {
         </div>
       )}
 
-      <section
-        id="staff"
-        className="py-16 bg-gradient-to-b from-[#f4fbfb] via-[#f4fbfb] to-transparent dark:bg-black dark:from-black dark:via-black dark:to-transparent"
-      >
-        <div className="container-1120">
-          <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
-            <h2 className="btn btn-primary text-lg sm:text-xl md:text-2xl mb-[0.5cm] border border-brand-blue shadow-[0_8px_20px_rgba(14,165,233,.35)] animate-tilt-3d">
-              Our Team
-            </h2>
-            <p className="muted">Dedicated professionals delivering exceptional care.</p>
-          </div>
-          <div className="grid gap-5 md:grid-cols-4">
-            {[
-              {
-                n: 'Dr. Aisha Mensah',
-                t: 'Consultant Physician',
-                d: '15+ years in internal medicine with focus on preventive care.',
-              },
-              {
-                n: 'Dr. David Ofori',
-                t: 'Dental Surgeon',
-                d: 'Comprehensive dental care and cosmetic dentistry specialist.',
-              },
-              {
-                n: 'Matilda Owusu',
-                t: 'Senior Midwife',
-                d: 'Compassionate maternity support from antenatal to postnatal.',
-              },
-              {
-                n: 'Samuel Tetteh',
-                t: 'Head Nurse',
-                d: 'Patient advocacy and quality assurance across wards.',
-              },
-            ].map((p, idx) => (
-              <article
-                key={idx}
-                className={`card card-3d reveal-up opacity-0 translate-y-3 transition`}
-                style={{ transitionDelay: `${idx * 0.05}s` }}
-              >
-                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-100 to-cyan-100 border border-slate-200 mb-2 dark:bg-[#0f172a] dark:bg-none dark:border-slate-700 animate-tilt-3d" />
-                <h3 className="font-semibold">{p.n}</h3>
-                <p className="muted">{p.t}</p>
-                <p>{p.d}</p>
-              </article>
-            ))}
-          </div>
-          <div className="text-center mt-6 reveal-up opacity-0 translate-y-3 transition">
-            <Link to="/staff" className="btn btn-outline btn-3d">
-              Meet All Staff
-            </Link>
-          </div>
-        </div>
-      </section>
-
       <section id="blog" className="py-16">
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
@@ -543,7 +498,7 @@ export default function Home() {
 
       <section
         id="testimonials"
-        className="py-16 bg-gradient-to-b from-[#f4fbfb] via-[#f4fbfb] to-transparent dark:bg-black dark:from-black dark:via-black dark:to-transparent"
+        className="py-16 bg-white dark:bg-black dark:from-black dark:via-black dark:to-transparent"
       >
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
@@ -776,6 +731,7 @@ function AppointmentForm({ onClose }: { onClose?: () => void }) {
               'Laboratory',
               'Maternity Services',
               'Online Consultation',
+              'Home Care Services',
             ].map((s) => (
               <option key={s}>{s}</option>
             ))}

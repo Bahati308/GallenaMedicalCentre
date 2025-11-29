@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import SEO from '../components/SEO';
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 
@@ -47,18 +48,16 @@ const serviceDetails: Record<string, ServiceInfo> = {
   },
   'specialist-clinics': {
     title: 'Specialist Clinics',
-    shortDescription:
-      'Focused reviews across cardiology, pediatrics, orthopedics, ENT, dermatology, and more.',
+    shortDescription: 'General gynecology, gynocology, infetility, pediatrics.',
     fullDescription:
-      'Access expert care from board-certified specialists across multiple disciplines. Our specialist clinics offer focused evaluations, advanced diagnostics, and specialized treatment plans for complex health conditions.',
+      "Our Specialist Clinics provide expert care in general gynecology, gynecology, infertility treatment, and pediatrics. Our board-certified specialists offer focused evaluations, advanced diagnostics, and specialized treatment plans for women's health, reproductive care, and children's health needs.",
     features: [
-      'Cardiology: Heart health assessments, ECG, and cardiac care',
+      "General Gynecology: Comprehensive women's health care and routine gynecological exams",
+      'Gynecology: Advanced gynecological conditions and treatments',
+      'Infertility: Fertility assessments, treatments, and reproductive health support',
       'Pediatrics: Child health from infancy through adolescence',
-      'Orthopedics: Bone, joint, and musculoskeletal conditions',
-      'ENT: Ear, nose, and throat disorders',
-      'Dermatology: Skin conditions and dermatological care',
-      "Gynecology: Women's health and reproductive care",
-      'Neurology: Nervous system and brain health',
+      'Specialized diagnostic testing and evaluations',
+      'Personalized treatment plans for each patient',
       'Coordinated care with primary physicians',
     ],
     whatToExpect: [
@@ -179,9 +178,9 @@ const serviceDetails: Record<string, ServiceInfo> = {
   pharmacy: {
     title: 'Pharmacy',
     shortDescription:
-      'Hospital-grade dispensary, medication counselling, and chronic therapy support on site.',
+      'Hospital-grade dispensary, medication counselling, chronic therapy support on site, and delivery of medicines to your home.',
     fullDescription:
-      'Our on-site Pharmacy provides convenient access to high-quality medications with professional pharmaceutical counseling. We stock a comprehensive range of medications and offer support for chronic disease management.',
+      'Our on-site Pharmacy provides convenient access to high-quality medications with professional pharmaceutical counseling. We stock a comprehensive range of medications, offer support for chronic disease management, and provide home delivery service for your convenience.',
     features: [
       'Hospital-grade medication dispensary',
       'Prescription and over-the-counter medications',
@@ -191,6 +190,7 @@ const serviceDetails: Record<string, ServiceInfo> = {
       'Medication adherence support',
       'Refill reminders and management',
       'Insurance billing support',
+      'Home delivery of medicines for your convenience',
     ],
     whatToExpect: [
       'Present your prescription or request OTC medications',
@@ -348,6 +348,47 @@ const serviceDetails: Record<string, ServiceInfo> = {
       'When in-person visit is not convenient',
     ],
   },
+  'home-care-services': {
+    title: 'Home Care Services',
+    shortDescription:
+      'Home visits, palliative care, one-on-one nursing, and personalized medical care in the comfort of your home.',
+    fullDescription:
+      'Our Home Care Services bring professional medical care directly to your home. Whether you need routine medical visits, specialized nursing care, or palliative support, our experienced healthcare team provides compassionate, personalized care in the comfort and familiarity of your own home.',
+    features: [
+      'Home visits by qualified physicians and nurses',
+      'Palliative care and end-of-life support',
+      'One-on-one nursing care and assistance',
+      'Medication management and administration',
+      'Wound care and dressing changes',
+      'Chronic disease monitoring and management',
+      'Post-surgical care and recovery support',
+      'Health assessments and vital signs monitoring',
+      'Family education and care coordination',
+      'Flexible scheduling to meet your needs',
+    ],
+    whatToExpect: [
+      'Initial assessment to determine care needs',
+      'Development of personalized care plan',
+      'Regular scheduled visits by healthcare professionals',
+      'Comprehensive medical care in your home',
+      'Medication administration and monitoring',
+      'Health status assessments and reporting',
+      'Coordination with your primary physician',
+      'Family involvement and education',
+      '24/7 on-call support for urgent needs',
+    ],
+    whenToVisit: [
+      'When mobility issues prevent clinic visits',
+      'Post-surgical recovery requiring home care',
+      'Chronic illness management at home',
+      'Palliative and end-of-life care needs',
+      'Elderly care and assistance',
+      'Disability support and care',
+      'Wound care and dressing changes',
+      'Medication management needs',
+      'When home environment is more comfortable for recovery',
+    ],
+  },
 };
 
 export default function ServiceDetail() {
@@ -378,7 +419,7 @@ export default function ServiceDetail() {
         <div className="container-1120">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-3xl font-semibold mb-4">Service Not Found</h1>
-            <p className="muted mb-6">The service you're looking for doesn't exist.</p>
+            <p className="muted mb-6">The service you&apos;re looking for doesn&apos;t exist.</p>
             <Link to="/services" className="btn btn-primary">
               View All Services
             </Link>
@@ -392,10 +433,11 @@ export default function ServiceDetail() {
 
   return (
     <section className="py-16" ref={revealRef}>
-      <Helmet>
-        <title>{service.title} | Gallena Medical Centre</title>
-        <meta name="description" content={service.fullDescription} />
-      </Helmet>
+      <SEO
+        title={service.title}
+        description={service.fullDescription}
+        canonical={`/services/${serviceSlug}`}
+      />
       <div className="container-1120">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6 reveal-up opacity-0 translate-y-3 transition">

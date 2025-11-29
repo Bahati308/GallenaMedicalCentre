@@ -1,6 +1,6 @@
-import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
+import SEO from '../components/SEO';
 
 function titleToSlug(title: string): string {
   return title
@@ -18,7 +18,7 @@ export default function Services() {
     },
     {
       t: 'Specialist Clinics',
-      d: 'Focused reviews across cardiology, pediatrics, orthopedics, ENT, dermatology, and more.',
+      d: 'General gynecology, gynocology, infetility, pediatrics.',
     },
     {
       t: 'Outpatient Services',
@@ -34,7 +34,7 @@ export default function Services() {
     },
     {
       t: 'Pharmacy',
-      d: 'Hospital-grade dispensary, medication counselling, and chronic therapy support on site.',
+      d: 'Hospital-grade dispensary, medication counselling, chronic therapy support on site, and delivery of medicines to your home.',
     },
     {
       t: 'Inpatient Services',
@@ -51,6 +51,10 @@ export default function Services() {
     {
       t: 'Online Consultation',
       d: 'Secure virtual visits for follow-ups, prescription renewals, and health coaching wherever you are.',
+    },
+    {
+      t: 'Home Care Services',
+      d: 'Home visits, palliative care, one-on-one nursing, and personalized medical care in the comfort of your home.',
     },
   ];
 
@@ -72,9 +76,11 @@ export default function Services() {
 
   return (
     <section className="py-16" ref={revealRef}>
-      <Helmet>
-        <title>Services | Gallena Medical Centre</title>
-      </Helmet>
+      <SEO
+        title="Medical Services"
+        description="Comprehensive medical services at Gallena Medical Centre including general consultation, specialist clinics (gynecology, infertility, pediatrics), outpatient services, surgeries, pharmacy with home delivery, home care services, and more."
+        canonical="/services"
+      />
       <div className="container-1120">
         <div className="max-w-3xl mx-auto text-center mb-7 reveal-up opacity-0 translate-y-3 transition">
           <h1 className="text-2xl sm:text-3xl font-semibold">Our Medical Services</h1>

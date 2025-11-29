@@ -83,14 +83,6 @@ export default function Header() {
             </li>
             <li>
               <NavLink
-                to="/staff"
-                className="px-3 py-2 rounded-lg text-white font-semibold text-base md:text-lg transition-all duration-300 hover:bg-white/10 font-heading"
-              >
-                Staff
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
                 to="/blog"
                 className="px-3 py-2 rounded-lg text-white font-semibold text-base md:text-lg transition-all duration-300 hover:bg-white/10 font-heading"
               >
@@ -153,24 +145,6 @@ export default function Header() {
                       style={{ fontSize: '1.3em' }}
                     >
                       Services
-                    </span>
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/staff"
-                    onClick={() => setOpen(false)}
-                    className={({ isActive }) =>
-                      `flex items-center justify-center px-4 py-3 transition-all duration-300 hover:bg-white/20 ${
-                        isActive ? 'bg-white/20' : ''
-                      }`
-                    }
-                  >
-                    <span
-                      className="font-bold italic text-base text-white"
-                      style={{ fontSize: '1.3em' }}
-                    >
-                      Staff
                     </span>
                   </NavLink>
                 </li>

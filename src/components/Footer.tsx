@@ -1,3 +1,12 @@
 export default function Footer() {
-  return <footer className="site-footer site-footer--slim" aria-hidden="true" />;
+  const currentYear = new Date().getFullYear();
+  return (
+    <footer className="site-footer site-footer--slim">
+      <div className="container-1120 text-center">
+        <p className="text-white font-bold" style={{ fontSize: '1.5em' }}>
+          &copy; {currentYear} Gallena Medical Centre. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  );
 }

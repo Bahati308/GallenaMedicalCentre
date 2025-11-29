@@ -1,137 +1,290 @@
-# Form Data Handling Guide
+# Form Data Handling Guide - Google Sheets Integration
 
-This guide explains how to configure form data handling for the appointment and contact forms.
+This guide explains how to configure form submissions to save data directly to Google Sheets using Google Apps Script.
 
-## Current Implementation
+## Overview
 
-The forms are **configured to use Custom API Endpoints** (Option 1). You need to set up your backend API and configure the endpoints.
+The forms are configured to use **Google Apps Script (GAS)** which writes data directly to Google Sheets. This is a free, serverless solution that requires no backend hosting.
 
-## Setup: Custom API Endpoint (Currently Active)
+## How It Works
 
-### Step 1: Create Environment Variables
+1. Form submissions are sent to a Google Apps Script Web App
+2. The script processes the data and writes it to a Google Sheet
+3. You can view all submissions in your Google Sheet
 
-Create a `.env` file in the root directory:
+## Setup Instructions
 
-```env
-VITE_API_ROOT=https://your-api.com
-VITE_API_ENDPOINT=https://your-api.com/api/appointments
-VITE_CONTACT_API_ENDPOINT=https://your-api.com/api/contact
+### Step 1: Create a Google Sheet
+
+1. Go to [Google Sheets](https://sheets.google.com)
+2. Create a new spreadsheet
+3. Name it something like "Gallena Medical Centre - Form Submissions"
+4. Create two sheets:
+   - **Sheet 1**: Name it "Appointments"
+   - **Sheet 2**: Name it "Contact"
+
+### Step 2: Set Up Headers in Google Sheets
+
+#### For Appointments Sheet:
+
+In row 1, add these column headers:
+
+```
+Full Name | Email | Phone | Preferred Date & Time | Department | Message | Timestamp
 ```
 
-**Example endpoints:**
+#### For Contact Sheet:
 
-```env
-# Local development
-VITE_API_ROOT=http://localhost:3000
-VITE_API_ENDPOINT=http://localhost:3000/api/appointments
-VITE_CONTACT_API_ENDPOINT=http://localhost:3000/api/contact
+In row 1, add these column headers:
 
-# Production
-VITE_API_ROOT=https://api.gallenamedicalcentre.com
-VITE_API_ENDPOINT=https://api.gallenamedicalcentre.com/appointments
-VITE_CONTACT_API_ENDPOINT=https://api.gallenamedicalcentre.com/contact
+```
+Full Name | Email | Message | Timestamp
 ```
 
-> **Tip:** Keep a `.env.example` file updated in your repo so collaborators know which variables are required.
+### Step 3: Create Google Apps Script
 
-### Step 2: Verify Code Configuration
+1. In your Google Sheet, click **Extensions** → **Apps Script**
+2. Delete any default code
+3. Copy and paste the following code:
 
-The forms are already configured to use the API:
+```javascript
+// Configuration
+const APPOINTMENTS_SHEET_NAME = 'Appointments';
+const CONTACT_SHEET_NAME = 'Contact';
 
-- `src/pages/Home.tsx` - Uses `submitAppointmentForm(formData)`
-- `src/pages/Contact.tsx` - Uses `submitContactForm(formData)`
+/**
+ * Handle appointment form submissions
+ */
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const sheetName = data.type === 'contact' ? CONTACT_SHEET_NAME : APPOINTMENTS_SHEET_NAME;
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
 
-No code changes needed! Just configure your `.env` file.
+    if (!sheet) {
+      return ContentService.createTextOutput(
+        JSON.stringify({ success: false, error: `Sheet "${sheetName}" not found` })
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
 
-### Step 3: Backend API Requirements
+    // Get headers from first row
+    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
 
-Your backend API should accept POST requests with JSON data:
+    // Prepare row data based on form type
+    let rowData = [];
 
-**Appointment Form Data:**
+    if (data.type === 'contact') {
+      // Contact form: Full Name | Email | Message | Timestamp
+      rowData = [
+        data.fullName || '',
+        data.email || '',
+        data.message || '',
+        new Date().toISOString(),
+      ];
+    } else {
+      // Appointment form: Full Name | Email | Phone | Preferred Date & Time | Department | Message | Timestamp
+      rowData = [
+        data.fullName || '',
+        data.email || '',
+        data.phone || '',
+        data.preferredDateTime || '',
+        data.department || '',
+        data.message || '',
+        new Date().toISOString(),
+      ];
+    }
 
-```json
-{
-  "fullName": "John Doe",
-  "email": "john@example.com",
-  "phone": "+1 555 123 4567",
-  "preferredDateTime": "2024-01-15T10:00",
-  "department": "General Medicine",
-  "message": "Optional message"
+    // Append row to sheet
+    sheet.appendRow(rowData);
+
+    return ContentService.createTextOutput(
+      JSON.stringify({ success: true, message: 'Form submitted successfully' })
+    ).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ success: false, error: error.toString() })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * Handle GET requests (for testing)
+ */
+function doGet(e) {
+  return ContentService.createTextOutput('Google Apps Script is running!').setMimeType(
+    ContentService.MimeType.TEXT
+  );
 }
 ```
 
-## Option 2: Formspree (No Backend Required)
+4. Click **Save** (💾) and give your project a name like "Gallena Form Handler"
 
-1. Sign up at [formspree.io](https://formspree.io)
-2. Create a new form and get your form ID
-3. Update `src/pages/Home.tsx`:
+### Step 4: Deploy as Web App
 
-```typescript
-import { submitViaFormspree } from '../utils/formHandler';
+1. Click **Deploy** → **New deployment**
+2. Click the gear icon ⚙️ next to "Select type" and choose **Web app**
+3. Configure the deployment:
+   - **Description**: "Form submission handler v1"
+   - **Execute as**: "Me" (your email)
+   - **Who has access**: **"Anyone"** (Important! This allows your website to submit forms)
+4. Click **Deploy**
+5. **Copy the Web App URL** - it will look like:
+   ```
+   https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec
+   ```
+6. Click **Authorize access** and grant permissions when prompted
 
-// In onSubmit function:
-await submitViaFormspree('your-form-id', formData);
+### Step 5: Create Separate Scripts for Each Form (Recommended)
+
+For better organization, create two separate Google Apps Script projects:
+
+#### Script 1: Appointments Handler
+
+```javascript
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Appointments');
+
+    if (!sheet) {
+      return ContentService.createTextOutput(
+        JSON.stringify({ success: false, error: 'Appointments sheet not found' })
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const rowData = [
+      data.fullName || '',
+      data.email || '',
+      data.phone || '',
+      data.preferredDateTime || '',
+      data.department || '',
+      data.message || '',
+      new Date().toISOString(),
+    ];
+
+    sheet.appendRow(rowData);
+
+    return ContentService.createTextOutput(
+      JSON.stringify({ success: true, message: 'Appointment submitted successfully' })
+    ).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ success: false, error: error.toString() })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+}
 ```
 
-### Option 3: EmailJS (Send Emails Directly)
+#### Script 2: Contact Handler
 
-1. Install EmailJS:
+```javascript
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Contact');
 
-```bash
-npm install @emailjs/browser
+    if (!sheet) {
+      return ContentService.createTextOutput(
+        JSON.stringify({ success: false, error: 'Contact sheet not found' })
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const rowData = [
+      data.fullName || '',
+      data.email || '',
+      data.message || '',
+      new Date().toISOString(),
+    ];
+
+    sheet.appendRow(rowData);
+
+    return ContentService.createTextOutput(
+      JSON.stringify({ success: true, message: 'Contact form submitted successfully' })
+    ).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ success: false, error: error.toString() })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+}
 ```
 
-2. Sign up at [emailjs.com](https://www.emailjs.com)
-3. Configure your service, template, and get your public key
-4. Update `src/pages/Home.tsx`:
+Deploy each script separately and get their Web App URLs.
 
-```typescript
-import { submitViaEmailJS } from '../utils/formHandler';
+### Step 6: Configure Environment Variables
 
-// In onSubmit function:
-await submitViaEmailJS('your-service-id', 'your-template-id', 'your-public-key', formData);
-```
-
-### Option 4: Netlify Forms (If Using Netlify)
-
-1. Add `data-netlify="true"` to your form element
-2. Update `src/pages/Home.tsx`:
-
-```typescript
-import { submitViaNetlify } from '../utils/formHandler';
-
-// In onSubmit function:
-await submitViaNetlify('appointment-form', formData);
-```
-
-## Environment Variables Setup
-
-**Create a `.env` file in the root directory** with your API endpoints:
+Create a `.env` file in your project root:
 
 ```env
-# API Endpoints (Required - Currently Active)
-VITE_API_ROOT=https://your-api.com
-VITE_API_ENDPOINT=https://your-api.com/api/appointments
-VITE_CONTACT_API_ENDPOINT=https://your-api.com/api/contact
+# Google Apps Script Web App URLs
+VITE_GAS_APPOINTMENTS_URL=https://script.google.com/macros/s/YOUR_APPOINTMENTS_SCRIPT_ID/exec
+VITE_GAS_CONTACT_URL=https://script.google.com/macros/s/YOUR_CONTACT_SCRIPT_ID/exec
 ```
 
 **Important Notes:**
 
+- Replace `YOUR_APPOINTMENTS_SCRIPT_ID` and `YOUR_CONTACT_SCRIPT_ID` with your actual script IDs
 - Environment variables must start with `VITE_` to be accessible in the frontend
-- If endpoints are not set, forms will default to `/api/appointments` and `/api/contact`
-- Restart your dev server after creating/updating `.env` file
 - Do NOT commit `.env` to version control (it should be in `.gitignore`)
+- Restart your dev server after creating/updating `.env` file
 
-**For other options (if switching later):**
+### Step 7: Test Your Setup
 
-```env
-# EmailJS (if using Option 3)
-VITE_EMAILJS_SERVICE_ID=your_service_id
-VITE_EMAILJS_TEMPLATE_ID=your_template_id
-VITE_EMAILJS_PUBLIC_KEY=your_public_key
+1. Start your development server: `npm run dev`
+2. Fill out the appointment form on your website
+3. Check your Google Sheet - you should see a new row with the submitted data
+4. Test the contact form as well
 
-# Recipient email
-VITE_RECIPIENT_EMAIL=gallenamedicalcentre@gmail.com
+## Troubleshooting
+
+### Forms Not Submitting
+
+1. **Check Web App URL**: Ensure the URL in `.env` is correct
+2. **Check Permissions**: Make sure the Web App is deployed with "Anyone" access
+3. **Check Sheet Names**: Ensure sheet names match exactly (case-sensitive)
+4. **Check Headers**: Verify column headers are in row 1
+5. **Check Browser Console**: Look for error messages
+
+### CORS Errors
+
+If you see CORS errors:
+
+- Google Apps Script handles CORS automatically when deployed as a Web App
+- Ensure you're using the Web App URL (not the script editor URL)
+- The code uses `no-cors` mode for GAS, which is correct
+
+### Data Not Appearing in Sheet
+
+1. Check that the sheet names match exactly
+2. Verify the script has permission to edit the sheet
+3. Check the Apps Script execution log: **Executions** in the Apps Script editor
+4. Ensure headers are in row 1
+
+### Testing the Script Directly
+
+You can test your script using `curl`:
+
+```bash
+# Test appointment form
+curl -X POST "YOUR_APPOINTMENTS_URL" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fullName": "Test User",
+    "email": "test@example.com",
+    "phone": "+1234567890",
+    "preferredDateTime": "2024-01-15T10:00",
+    "department": "General Consultation",
+    "message": "Test message"
+  }'
+
+# Test contact form
+curl -X POST "YOUR_CONTACT_URL" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fullName": "Test User",
+    "email": "test@example.com",
+    "message": "Test contact message"
+  }'
 ```
 
 ## Form Data Structure
@@ -143,7 +296,7 @@ VITE_RECIPIENT_EMAIL=gallenamedicalcentre@gmail.com
   fullName: string;
   email: string;
   phone: string;
-  preferredDateTime: string;
+  preferredDateTime: string; // ISO format: "2024-01-15T10:00"
   department: string;
   message?: string; // optional
 }
@@ -159,24 +312,59 @@ VITE_RECIPIENT_EMAIL=gallenamedicalcentre@gmail.com
 }
 ```
 
-## Error Handling
+## Advanced: Email Notifications
 
-The form handler includes comprehensive error handling:
+You can add email notifications to your Apps Script:
 
-- Network errors are caught and displayed to users
-- Validation errors are shown inline
-- Loading states prevent duplicate submissions
+```javascript
+function doPost(e) {
+  // ... existing code to write to sheet ...
 
-## Testing
+  // Send email notification
+  const recipientEmail = 'gallenamedicalcentre@gmail.com';
+  const subject =
+    data.type === 'contact' ? 'New Contact Form Submission' : 'New Appointment Request';
 
-1. For development, the form currently simulates submission (setTimeout)
-2. Test with your chosen service in development mode
-3. Monitor browser console for any errors
+  const emailBody =
+    data.type === 'contact'
+      ? `New contact form submission:\n\nName: ${data.fullName}\nEmail: ${data.email}\nMessage: ${data.message}`
+      : `New appointment request:\n\nName: ${data.fullName}\nEmail: ${data.email}\nPhone: ${data.phone}\nDate/Time: ${data.preferredDateTime}\nDepartment: ${data.department}\nMessage: ${data.message || 'None'}`;
+
+  MailApp.sendEmail(recipientEmail, subject, emailBody);
+
+  return ContentService.createTextOutput(
+    JSON.stringify({ success: true, message: 'Form submitted successfully' })
+  ).setMimeType(ContentService.MimeType.JSON);
+}
+```
 
 ## Security Notes
 
-- Never expose API keys in client-side code (use environment variables)
-- Implement rate limiting on your backend
-- Validate and sanitize all input on the server
-- Use HTTPS for all API endpoints
-- Consider adding CAPTCHA for production
+- Google Apps Script Web Apps are secure when deployed with "Anyone" access
+- The script only writes to your specific Google Sheet
+- No API keys are exposed in the frontend
+- All data is stored securely in your Google Drive
+- You can restrict access to the Google Sheet if needed
+
+## Benefits of Google Sheets Integration
+
+✅ **Free** - No hosting costs  
+✅ **Easy Setup** - No backend server required  
+✅ **Real-time Data** - View submissions immediately  
+✅ **Exportable** - Easy to export data to CSV/Excel  
+✅ **Collaborative** - Share sheet with team members  
+✅ **Searchable** - Built-in search and filter capabilities  
+✅ **Reliable** - Google's infrastructure handles scaling
+
+## Next Steps
+
+1. Set up your Google Sheet with proper headers
+2. Create and deploy your Google Apps Script
+3. Add the Web App URLs to your `.env` file
+4. Test both forms
+5. (Optional) Set up email notifications
+6. Share the Google Sheet with your team if needed
+
+---
+
+**Need Help?** Check the [Google Apps Script Documentation](https://developers.google.com/apps-script)

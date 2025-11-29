@@ -4,9 +4,8 @@ function getInitial(): 'light' | 'dark' {
   if (typeof window === 'undefined') return 'light';
   const saved = localStorage.getItem('theme') as 'light' | 'dark' | null;
   if (saved) return saved;
-  const prefersDark =
-    window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  return prefersDark ? 'dark' : 'light';
+  // Default to light mode
+  return 'light';
 }
 
 export default function ThemeToggle() {
