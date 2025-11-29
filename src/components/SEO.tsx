@@ -35,7 +35,7 @@ export default function SEO({
     name: 'Gallena Medical Centre',
     description: DEFAULT_DESCRIPTION,
     url: SITE_URL,
-    logo: `${SITE_URL}/logo.svg`,
+    logo: `${SITE_URL}/logo1.jpg`,
     image: `${SITE_URL}/logo2.jpg`,
     address: {
       '@type': 'PostalAddress',

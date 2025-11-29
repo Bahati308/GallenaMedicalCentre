@@ -29,7 +29,7 @@ export default function Header() {
           className="inline-flex items-center gap-2 no-underline text-white font-semibold group transition-transform duration-300 hover:scale-105"
         >
           <img
-            src="/logo.svg"
+            src="/logo1.jpg"
             alt="Gallena Medical Centre Logo"
             className="w-10 h-10 transition-all duration-300 group-hover:rotate-12 group-hover:shadow-lg group-hover:shadow-white/30 animate-tilt-3d"
           />
